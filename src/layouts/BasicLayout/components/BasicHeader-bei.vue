@@ -39,7 +39,7 @@
 
 <script lang='ts' setup>
 
-import {onMounted, withDefaults} from 'vue';
+import {onMounted, withDefaults, watch, ref} from 'vue';
 import {useRouter} from 'vue-router';
 
 const router = useRouter()
@@ -67,7 +67,19 @@ const props = withDefaults(defineProps<Props>(), {
     },
   ],
 });
+const screenWidth = ref<any>(window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth)
+
+watch(() => screenWidth, (val) => {
+  screenWidth.value = val
+
+})
+console.log(screenWidth.value)
 onMounted(() => {
+  window.onresize = () => {
+    return (() => {
+      screenWidth.value = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+    })()
+  }
   let htmlEl = document.getElementsByTagName('html')
   let radios = document.getElementsByName('themes')
   radios.forEach((el) => {

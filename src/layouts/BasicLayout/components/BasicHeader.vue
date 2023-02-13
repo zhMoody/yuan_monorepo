@@ -4,14 +4,14 @@
       <Icon size='22'>
         <HomeOutline tag="span"/>
       </Icon>
-      <span style="padding-left: 10px">  {{ store.userInfo.userName }}</span>
+      <span style="padding-left: 10px">  {{ store.userInfo.userName }} {{ screenWidth }}</span>
     </div>
     <div class="blog-center">
       <div class="blog-center-search">
         <div class="search">
-          <input type="text" class="ipt" placeholder="输入关键字搜索。。。">
+          <input class="ipt" placeholder="输入关键字搜索。。。" type="text">
           <button class="btn">
-            <Icon size='16' color="#666">
+            <Icon color="#666" size='16'>
               <Search tag="span"></Search>
             </Icon>
           </button>
@@ -19,35 +19,35 @@
       </div>
     </div>
     <div class="blog-right">
-      <MusicPlayer :showMusicBox="showMusicBox" @getValue="showBox"></MusicPlayer>
-      <div class="login-container" @click.self="showBox('login')">
-        <Icon v-if="!store.userInfo.token" size="24" color="#666" @click="showBox('login')">
+      <MusicPlayer></MusicPlayer>
+      <div class="login-container" @click.self="showBox">
+        <Icon v-if="!store.userInfo.token" color="#666" size="24" @click="showBox">
           <PersonCircleOutline></PersonCircleOutline>
         </Icon>
-        <span style="margin-right: 5px;font-size: 16px;color: #666" @click="showBox('login')">{{
+        <span style="margin-right: 5px;font-size: 16px;color: #666" @click="showBox">{{
             store.userInfo.nickname
           }}</span>
-        <Icon size="12" color="#666" @click="showBox('login')">
+        <Icon color="#666" size="12" @click="showBox">
           <CaretDown tag="span"></CaretDown>
         </Icon>
         <div class="avatar">
           <NAvatar
-            @click="showBox('login')"
             v-if="store.userInfo.token"
-            round
-            bordered
             :size="40"
             :src="store.userInfo.avatar"
+            bordered
             fallback-src="https://s1.ax1x.com/2020/07/25/UzAaMq.jpg"
+            round
+            @click="showBox"
           />
           <span v-if="store.userInfo.token" class="spa"></span>
         </div>
-        <div v-if="showLoginInputBox" class="login-posa wow animate__animated animate__fadeIn">
+        <div class="login-posa">
           <n-form
+            v-if="!store.userInfo.token"
             ref="formRef"
             :model="formValue"
             :rules="rules"
-            v-if="!store.userInfo.token"
           >
             <n-form-item label="用户名" path="user.nickname">
               <n-input v-model:value="formValue.nickname" placeholder="用户名"/>
@@ -59,74 +59,123 @@
               登录
             </n-button>
           </n-form>
-          <div v-if="store.userInfo.token" @click.self="logoutBlog">退出登录</div>
+          <div v-if="store.userInfo.token" class="isLoginBox" @click.self="logoutBlog">
+            <div class="LoginOptions helloTitle">{{ getDate() }}</div>
+            <div class="LoginOptions">新建文章</div>
+            <div class="LoginOptions">后台管理</div>
+            <n-divider/>
+            <div class="LoginOptions logoutBtn" @click="logoutBlog">
+              退出登录
+            </div>
+          </div>
         </div>
       </div>
-
     </div>
   </header>
-
+  <header class="mobile-header">
+    <div class="btn" @click="showMenu">
+      <Icon color="#666" size='16'>
+        <MenuSharp tag="span"></MenuSharp>
+      </Icon>
+    </div>
+    <span class="title">{{ store.userInfo.userName }}  {{ show.isShowMenu.menwWidth }}</span>
+    <div class="btn">
+      <Icon color="#666" size='16'>
+        <Search tag="span"></Search>
+      </Icon>
+    </div>
+  </header>
 </template>
-<script setup lang='ts'>
-import {onMounted, ref} from "vue";
-import {NInput, FormInst, useMessage, NForm, NFormItem, NButton, NAvatar} from 'naive-ui'
+<script lang='ts' setup>
+import {computed, onMounted, ref, watch, watchEffect} from "vue";
+import {NInput, FormInst, useMessage, NForm, NFormItem, NButton, NAvatar, NDivider, useNotification} from 'naive-ui'
 import MusicPlayer from '@/components/musicPlay/index.vue'
-import {HomeOutline, Search, PersonCircleOutline, CaretDown} from '@vicons/ionicons5'
+import {HomeOutline, Search, PersonCircleOutline, CaretDown, MenuSharp} from '@vicons/ionicons5'
 import useUserStore from "@/stores/useUser";
+import useMenu from "@/stores/useMenu";
 import {Icon} from '@vicons/utils'
 import WOW from "wow.js";
 
 const store = useUserStore()
+const notification = useNotification()
+const show = useMenu()
 const formRef = ref<FormInst | null>(null)
 const message = useMessage()
-const showLoginInputBox = ref<boolean>(false)
-const showMusicBox = ref<boolean>(false)
+const isShowLoginInputBox = ref<boolean>(false)
+const screenWidth = ref<any>(window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth)
 const formValue = ref<{ nickname: string, password: string }>({
   nickname: 'admin',
   password: 'Aa2597758'
 })
-let rules = {
-  nickname: {
-    required: true,
-    message: '请输入姓名',
-    trigger: 'blur'
-  },
-  password: {
-    required: true,
-    message: '请输入年龄',
-    trigger: ['input', 'blur']
-  }
-}
+
+
 const logoutBlog = () => {
   store.logout()
 }
-const showBox = (keyword: string) => {
-  console.log(showLoginInputBox.value, showMusicBox.value)
-  switch (keyword) {
-    case 'login':
-      showMusicBox.value = false
-      return showLoginInputBox.value = !showLoginInputBox.value
-    case 'music':
-      showLoginInputBox.value = false
-      return showMusicBox.value = !showMusicBox.value
-    default:
-      return false
-  }
-}
+
 const handleValidateClick = () => {
   if (!formValue.value.nickname.trim()) {
-    message.warning('必须填写用户名')
+    notification.create({
+      title: '登录通知',
+      content: "用户名是必填的哦～",
+      type: 'warning',
+      duration: 2000,
+    })
   } else if (!formValue.value.password.trim()) {
-    message.warning('必须填写密码')
+    notification.create({
+      title: '登录通知',
+      content: "密码是必填的哦～",
+      type: 'warning',
+      duration: 2000,
+    })
   } else {
     store.login(formValue.value)
-    showLoginInputBox.value = false
+  }
+}
+const translate = ref('translateY(-300px)')
+const op = ref(0)
+const showBox = () => {
+  isShowLoginInputBox.value = !isShowLoginInputBox.value
+  if (isShowLoginInputBox.value) {
+    translate.value = 'translateY(0)'
+    op.value = 1
+  } else {
+    translate.value = 'translateY(-300px)'
+    op.value = 0
+  }
+}
+const showMenu = () => {
+  show.isShow(!show.isShowMenu.ShowMenu)
+}
+const getDate = () => {
+  let time_now = new Date();
+  let hour = time_now.getHours();	//小时
+  if (hour >= 0 && hour < 6) {
+    return '凌晨好，注意休息！！'
+  } else if (hour >= 6 && hour < 10) {
+    return '早晨好呀～'
+  } else if (hour >= 10 && hour < 12) {
+    return '上午好呀～'
+  } else if (hour >= 12 && hour <= 18) {
+    return '下午好呀～'
+  } else {
+    return '晚上好呀～'
   }
 }
 
-onMounted(() => {
-  console.log(store.userInfo)
-
+const setShowLoginBox = () => {
+  console.log(111)
+  isShowLoginInputBox.value = false
+  translate.value = 'translateY(-300px)'
+  op.value = 0
+}
+onMounted(async () => {
+  window.onresize = () => {
+    return (() => {
+      show.setMenuWidth(window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth)
+      screenWidth.value = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+    })()
+  }
   let wow = new WOW({
     boxClass: "wow",
     animateClass: "animated",
@@ -142,12 +191,13 @@ onMounted(() => {
 })
 </script>
 
-<style scoped lang="less">
+<style lang="less" scoped>
 
 
 :deep(.n-form-item .n-form-item-feedback-wrapper) {
   min-height: 10px !important;
 }
+
 
 .header {
   width: 100%;
@@ -179,7 +229,7 @@ onMounted(() => {
       font-size: 24px;
       text-align: center;
       transition: all .3s;
-      color: #666;
+      color: var(--c-text-666);
     }
 
   }
@@ -281,14 +331,52 @@ onMounted(() => {
 
       .login-posa {
         position: absolute;
-        top: 50px;
+        top: 60px;
         right: 0;
         width: 280px;
         height: 210px;
         padding: 15px;
+        transition: all .5s;
+        transform: v-bind(translate);
+        opacity: v-bind(op);
         background-color: var(--80background-color);
+        z-index: -1;
         box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
         border-radius: 5px;
+      }
+
+      .isLoginBox {
+        display: flex;
+        flex-direction: column;
+
+        :deep(.n-divider:not(.n-divider--vertical)) {
+          margin: 0 !important;
+          line-height: 0;
+        }
+
+        .LoginOptions {
+          height: 35px;
+          line-height: 35px;
+          margin-bottom: 15px;
+          padding-left: 10px;
+          border-radius: 3px;
+
+          &:hover {
+            background: var(--c-907e7e30);
+          }
+        }
+
+        .helloTitle {
+          &:hover {
+            background: transparent;
+          }
+        }
+
+        .logoutBtn {
+          text-align: center;
+          color: red;
+          padding-left: 0;
+        }
       }
 
       &:hover {
@@ -300,5 +388,52 @@ onMounted(() => {
 
 }
 
+.mobile-header {
+  width: 100%;
+  height: 50px;
+  background-color: var(--c-f9f9f930);
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+  position: sticky;
+  top: 0;
+  z-index: 990;
+  backdrop-filter: var(--c-base-blur);
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  border-radius: 5px;
+  display: none;
 
+  .title {
+    flex: 1;
+    font-size: 24px;
+    text-align: center;
+    transition: all .3s;
+    color: var(--c-text-666);
+    cursor: url('../../../assets/link.cur'), pointer;
+    user-select: none;
+  }
+
+  .btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 100%;
+    padding: 0 10px;
+    line-height: 36px;
+    border: 1px solid transparent;
+    background-color: transparent;
+    cursor: url(/src/assets/link.cur), pointer;
+  }
+}
+
+@media screen and  (max-width: 750px) {
+  body .header {
+    display: none;
+  }
+
+  body .mobile-header {
+    display: flex;
+  }
+}
 </style>

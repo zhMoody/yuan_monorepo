@@ -4,9 +4,9 @@
       <div class="cover">
         <n-avatar
           :size="40"
-          round
-          bordered
           :src="options.musicImg"
+          bordered
+          round
         />
       </div>
       <div class="switch">
@@ -14,42 +14,75 @@
         <div class="songOption">
           <div class="songOption-icon">
            <span @click="musicPlay('pre')">
-              <SvgIcon name="rewind" color="#666"></SvgIcon>
+              <SvgIcon color="#666" name="rewind"></SvgIcon>
            </span>
             <span @click="musicPlay('play')">
               <SvgIcon :name=" options.play ? 'pause' : 'play'" color="#666"></SvgIcon>
             </span>
 
             <span @click="musicPlay('next')">
-              <SvgIcon name="fast-forward" color="#666"></SvgIcon>
+              <SvgIcon color="#666" name="fast-forward"></SvgIcon>
             </span>
             <span>{{ options.currentTime || '00:00' }}</span>
           </div>
           <div class="Progress">
-            <div class="onProgress" :style="{width: options.currentProgressTime + '%'}">
+            <div :style="{width: options.currentProgressTime + '%'}" class="onProgress">
               <span></span>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="music-option" @click="showBox('music')">
-      <Icon size="24" color="#666">
-        <BowlingBallOutline tag="span"></BowlingBallOutline>
-      </Icon>
-      <div v-if="showMusicBox" class="music-posa wow animate__animated animate__fadeIn"></div>
+    <div class="music-option">
+      <div class="btn" @click.self="showBox">
+        <Icon color="#666" size="24" @click="showBox">
+          <BowlingBallOutline tag="span"></BowlingBallOutline>
+        </Icon>
+      </div>
+      <div class="music-posa wow animate__animated animate__fadeIn">
+        <div class="text">当前歌单歌曲数量: {{ state.DataList.length }}</div>
+        <div class="box">
+          <div ref="scrollBox" class="container" @scroll="doscroll">
+            <div ref="items">
+              <div v-for="item in virtualList" :key="item" ref="item" :style="{
+                color:options.index + 1 === item.id ? 'var(--c-7F780AFF)' : 'var(--c-text-666);',
+                background:options.index + 1 === item.id ? 'var(--c-907e7e30)' : 'var(--c-bg-body)',
+                   }" class="item"
+                   @click="handlerPlay(item.id)">
+                <span>
+                  {{ item.id }}  {{ item.name }}
+                </span>
+                <span>
+                  {{ item.artist }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <audio ref="singeBox"></audio>
 </template>
-<script setup lang='ts'>
+<script lang='ts' setup>
 import {
   BowlingBallOutline,
 } from '@vicons/ionicons5'
 import {Icon} from '@vicons/utils'
 import {NAvatar} from 'naive-ui'
-import {reactive, onMounted, ref, withDefaults} from 'vue'
+import {reactive, onMounted, ref, withDefaults, watchEffect, computed, nextTick, watch} from 'vue'
+import {getMusicList} from "@/api/music";
 
+// 关联歌单
+const handlerPlay = (id) => {
+  if (!options.player[id]) {
+    // 没值触发新的播放
+    options.index = state.DataList.findIndex((x) => x.id === id);
+    console.log(options.index);
+    options.play = false;
+  }
+  musicPlay("play")
+}
 
 interface Options {
   flag: boolean,
@@ -73,37 +106,24 @@ interface Options {
 }
 
 interface Props {
-  showMusicBox?: boolean,
-  list?: any,
+  isShowMusicBox?: boolean,
 }
 
-const emit = defineEmits(["getValue"])
-const showBox = (str) => {
-  emit("getValue", str)
+const translate = ref('translateY(-400px)')
+const op = ref(0)
+const showPosa = ref(false)
+const showBox = () => {
+  showPosa.value = !showPosa.value
+  if (showPosa.value) {
+    translate.value = 'translateY(0)'
+    op.value = 1
+  } else {
+    translate.value = 'translateY(-400px)'
+    op.value = 0
+  }
 }
-
-let props = withDefaults(defineProps<Props>(), {
-  showMusicBox: false,
-  list: [
-    {
-      id: 0,
-      name: "四季予你",  //歌曲名
-      url: 'https://hubyo.cn/index.php/action/handsome-meting-api?server=netease&type=url&id=1807537867&auth=cd025028e1d1c9ea84031db721155f7c',
-      cover: "https://p3.music.126.net/k5r1GC-erKK4WcDmzyrsIw==/109951165648878421.jpg?param=90y90",		// 歌曲封面
-      artist: "程响" // 歌手
-    },
-    {
-      id: 0,
-      name: "美好的事可不可以發生在我身上",  //歌曲名
-      url: 'https://hubyo.cn/index.php/action/handsome-meting-api?server=netease&type=url&id=1501530173&auth=e19132d1de2a350412df2483cce4bc18',
-      cover: "https://p3.music.126.net/8sAQGYvrvOZqvNdB9Heb1Q==/109951166270738744.jpg?param=90y90",		// 歌曲封面
-      artist: "康士坦的变化球" // 歌手
-    }
-  ]
-})
 
 let singeBox = ref<HTMLAudioElement | undefined>()//audio对象
-
 const options = reactive<Options>({
   flag: false,
   isShow: false,
@@ -124,97 +144,106 @@ const options = reactive<Options>({
   play: false, //播放状态，true为正在播放
   player: {},
 })
+const scrollBox = ref<HTMLDivElement | null>()
+const items = ref<HTMLDivElement | null>()
+const state = reactive<{ DataList: Array<MusicTypes.Datum>, ItemBoxHeight: number, itemNum: number, startIndex: number }>({
+  DataList: [],
+  ItemBoxHeight: 0,
+  itemNum: 100,
+  startIndex: 0,
+})
+// ---- 音乐控件---
 
 const musicPlay = (flag) => {
   switch (flag) {
     case "pre":
-      if (props.list[options.index - 1]) {
-        singeBox.value!.src = options.musicPath + props.list[options.index - 1].url;
-        options.index -= 1;
+      if (state.DataList[options.index - 1]) {
+        singeBox.value!.src = options.musicPath + state.DataList[options.index - 1].url
+        options.index -= 1
       } else {
-        singeBox.value!.src = options.musicPath + props.list[props.list.length - 1].url;
-        options.index = props.list.length - 1;
+        singeBox.value!.src = options.musicPath + state.DataList[state.DataList.length - 1].url
+        options.index = state.DataList.length - 1
       }
-      break;
+      break
     case "play":
-      options.play = !options.play;
+      options.play = !options.play
       // 对接控件 同步 列表里的控件
-      if (options.player[props.list[options.index].id])
-        options.player[props.list[options.index].id].play = options.play;
+      if (options.player[state.DataList[options.index].id!])
+        options.player[state.DataList[options.index].id!].play = options.play
       // 新的歌曲播放
-      if (options.play && !options.player[props.list[options.index].id])
-        singeBox.value!.src = options.musicPath + props.list[options.index].url;
-      break;
+      if (options.play && !options.player[state.DataList[options.index].id!])
+        singeBox.value!.src = options.musicPath + state.DataList[options.index].url
+      break
     case "next":
-      if (props.list[options.index + 1]) {
-        singeBox.value!.src = options.musicPath + props.list[options.index + 1].url;
-        options.index += 1;
+      if (state.DataList[options.index + 1]) {
+        singeBox.value!.src = options.musicPath + state.DataList[options.index + 1].url
+        options.index += 1
       } else {
-        singeBox.value!.src = options.musicPath + props.list[0].url;
-        options.index = 0;
+        singeBox.value!.src = options.musicPath + state.DataList[0].url
+        options.index = 0
       }
-      break;
+      break
   }
-  if (options.play && !options.player[props.list[options.index].id]) {
-    options.player = {};
-    options.player[props.list[options.index].id] = {};
-    options.player[props.list[options.index].id].play = true;
+  if (options.play && !options.player[state.DataList[options.index].id!]) {
+    options.player = {}
+    options.player[state.DataList[options.index].id!] = {}
+    options.player[state.DataList[options.index].id!].play = true
   } else {
-    options.play ? singeBox.value!.play() : singeBox.value!.pause();
+    options.play ? singeBox.value!.play() : singeBox.value!.pause()
   }
 }
 const init = () => {
-  singeBox.value!.src = props.list[0].url;
-  // 歌曲链接;
+  // @ts-ignore
+  singeBox.value.src = state.DataList[0].url
+  // 歌曲链接
   // 绑定三个触发方法
   // 当时长有变化时触发，由"NaN"变为实际时长也算
   singeBox.value!.ondurationchange = function () {
-    console.log("时长发生了变化");
-    options.play ? singeBox.value!.play() : singeBox.value!.pause();
-    options.sliderMax = singeBox.value!.duration;
-    console.log("声音", singeBox.value!.volume * 100);
-    options.voiceVal = singeBox.value!.volume * 100;
-    updateTime();
-  };
+    // console.log("时长发生了变化")
+    options.play ? singeBox.value!.play() : singeBox.value!.pause()
+    options.sliderMax = singeBox.value!.duration
+    // console.log("声音", singeBox.value!.volume * 100)
+    options.voiceVal = singeBox.value!.volume * 100
+    updateTime()
+  }
   // 当前数据可用是触发
   singeBox.value!.oncanplay = function () {
-    options.play ? singeBox.value!.play() : singeBox.value!.pause();
-    console.log("已经可以播放了");
-  };
+    options.play ? singeBox.value!.play() : singeBox.value!.pause()
+    console.log("已经可以播放了")
+  }
   // 播放位置发送改变时触发。
   singeBox.value!.ontimeupdate = function () {
-    console.log("播放位置发送了变动");
-    console.log(options.sliderVal)
-
-    updateTime();
-  };
+    // console.log("播放位置发送了变动")
+    // console.log(options.sliderVal)
+    updateTime()
+  }
   // 音频播放完毕
   singeBox.value!.onended = function () {
-    musicPlay("next");
-    console.log("播放完毕，谢谢收听");
-  }; // 音频播放完毕
+    musicPlay("next")
+    console.log("播放完毕，谢谢收听")
+  }  // 音频播放完毕
 
   // 音频播放完毕
   singeBox.value!.onerror = function () {
-    console.log("加载出错！");
-  };
+    console.log("加载出错！")
+  }
 }
 const updateTime = () => {
-  const total = formatTime(singeBox.value!.duration);
-  const current = formatTime(singeBox.value!.currentTime);
+  const total = formatTime(singeBox.value!.duration)
+  const current = formatTime(singeBox.value!.currentTime)
   options.currentProgressTime = singeBox.value!.currentTime / singeBox.value!.duration * 100
-  options.duration = `${total.min}:${total.sec}`;
-  options.currentTime = `${current.min}:${current.sec}`;
+  options.duration = `${total.min}:${total.sec}`
+  options.currentTime = `${current.min}:${current.sec}`
   // 值为xx.xxxxx 需要取整
-  options.sliderVal = Math.floor(singeBox.value!.currentTime);
+  options.sliderVal = Math.floor(singeBox.value!.currentTime)
   options.musicTitle =
-    props.list[options.index].name + " - " + props.list[options.index].artist;
-  options.musicImg = options.coverPath + props.list[options.index].cover + ".jpg";
+    state.DataList[options.index].name + " - " + state.DataList[options.index].artist
+  options.musicImg = options.coverPath + state.DataList[options.index].cover
 }
 const formatTime = (time) => {
   // 格式化毫秒，返回String型分秒对象
   // 有可能没获取到，为NaN
-  if (!time) return {min: "00", sec: "00"};
+  if (!time) return {min: "00", sec: "00"}
   return {
     min: Math.floor(time / 60)
       .toString()
@@ -222,15 +251,65 @@ const formatTime = (time) => {
     sec: Math.floor(time % 60)
       .toString()
       .padStart(2, "0"),
-  };
+  }
 }
-onMounted(() => {
-  init()
+// ---- 音乐控件---
+
+//--------------虚拟列表------------------
+
+const virtualList = computed(() => {
+  let endIndex = state.startIndex + state.itemNum
+  if (endIndex >= state.DataList.length) endIndex = state.DataList.length
+  return state.DataList.slice(state.startIndex, endIndex)
+})
+const doscroll = () => {
+  const curScrollTop = scrollBox.value!.scrollTop
+  if (curScrollTop > state.ItemBoxHeight) {
+    const index = ~~(scrollBox.value!.scrollTop / state.ItemBoxHeight)
+    items.value!.style.setProperty(
+      "padding-top",
+      `${index * state.ItemBoxHeight}px`
+    )
+    state.startIndex = index
+  } else {
+    items.value!.style.setProperty("padding-top", "0px")
+    state.startIndex = 0
+  }
+}
+watchEffect(() => {
+  if (state.DataList.length >= 0) {
+    nextTick(() => {
+      // 计算每行高度
+      // @ts-ignore
+      state.ItemBoxHeight = items.value.children[0].offsetHeight
+      //计算屏幕内能显示的行数   +1是防止下拉过快出现白屏
+      state.itemNum = ~~(scrollBox.value!.clientHeight / state.ItemBoxHeight) + 1
+      // 设置列表总高度
+      const ListHeight = state.ItemBoxHeight * state.DataList.length
+      items.value!.style.setProperty("height", `${ListHeight}px`)
+    })
+  }
+})
+//--------------虚拟列表------------------
+
+onMounted(async () => {
+  try {
+    const res = await getMusicList()
+    if (res.data) {
+      state.DataList = res.data.map((item, i) => {
+        let id = i + 1
+        return {...item, id}
+      })
+      init()
+    }
+  } catch (err) {
+    console.log(err)
+  }
 })
 </script>
-<style scoped lang="less">
+<style lang="less" scoped>
 .music {
-  display: flex;
+  display: flex
 }
 
 .player {
@@ -251,7 +330,7 @@ onMounted(() => {
     display: none;
 
     .onProgress {
-      width: 30%;
+      width: 1%;
       height: 3px;
       border-radius: 3px;
       background-color: #4f8984;
@@ -261,14 +340,22 @@ onMounted(() => {
       span {
         position: absolute;
         display: inline-block;
-        right: -8px;
-        top: -5px;
+        right: -10px;
+        top: 0;
         width: 10px;
-        height: 8px;
+        height: 3px;
         border-radius: 3px 3px 0 0;
         background-color: #4f8984;
         z-index: 99999;
+        transition: all .5s;
+        transform: scale(0);
       }
+    }
+
+    &:hover span {
+      height: 8px;
+      transform: scale(1);
+      top: -5px;
     }
   }
 
@@ -327,23 +414,111 @@ onMounted(() => {
   height: 50px;
   display: flex;
   align-items: center;
-  padding: 0 15px;
   user-select: none;
   position: relative;
+  transition: all .5s;
+  background-color: var(--c-f9f9f930);
 
   .music-posa {
+    transition: all .5s;
+    overflow: auto;
     position: absolute;
-    top: 50px;
+    top: 60px;
     right: 0;
     width: 254px;
-    height: 200px;
+    height: 285px;
     border-radius: 5px;
+    transform: v-bind(translate);
+    opacity: v-bind(op);
     background-color: var(--80background-color);
+    z-index: -2;
     box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
+    backdrop-filter: var(--c-base-blur);
+
+    &::-webkit-scrollbar {
+      width: 0px;
+      background: rgb(73, 73, 73);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(218, 220, 222, 0.74);
+    }
+  }
+
+  .btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 100%;
   }
 
   &:hover {
     background-color: rgba(0, 0, 0, .05);
   }
 }
+
+.text {
+  width: 250px;
+  font-size: 16px;
+  text-align: center;
+  padding-bottom: 10px;
+}
+
+.box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  height: 250px;
+  overflow-y: scroll;
+  width: 250px;
+  backdrop-filter: var(--c-base-blur);
+}
+
+.container::-webkit-scrollbar {
+  width: 3px;
+  background: rgb(73, 73, 73);
+}
+
+.container::-webkit-scrollbar-thumb {
+  background-color: rgba(218, 220, 222, 0.74);
+}
+
+.container .item {
+  padding: 0 10px;
+  height: 30px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  transition: all .3s;
+
+  span {
+    font-size: 10px !important;
+  }
+
+  &:hover {
+    background: var(--c-907e7e28) !important;
+  }
+}
+
+.container .item img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+@media screen and (max-width: 1110px) {
+  .music {
+    width: 0;
+    display: none;
+  }
+}
+
 </style>

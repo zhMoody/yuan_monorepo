@@ -1,54 +1,64 @@
 <template>
   <div class="content">
-    <div class="empty" v-show="!showPagination">
-      <NEmpty size="large" description="还没有文章，去创建属于你的第一篇文章吧！">
+    <div v-show="!showPagination" class="empty">
+      <NEmpty description="还没有文章，去创建属于你的第一篇文章吧！" size="large">
       </NEmpty>
     </div>
-    <div v-for="item in articleList.list" :key="item._id"
-         @click="gotoDetail(item._id)"
-         :class="`section wow animate__animated animate__backInUp`"
-         data-wow-duration="0.6s" data-wow-offset="1" data-wow-iteration="1">
-      <div class="card">
-        <div class="card-img">
-          <img v-lazy="item.cover"/>
-        </div>
-        <div class="titleInfo">
-          <div class="title">{{ item.title }}</div>
-          <div class="description">
-            <span>{{ item.description }}</span>
+    <div class="HomeTitle">
+      <h1 style="color: var(--c-text-666)">- {{ userStore.userInfo?.userName }} -</h1>
+      <h3 style="color: var(--c-text-666)">&(￣︶￣)↗[GO!][]~(￣▽￣)~*</h3>
+    </div>
+    <div class="itemContent">
+      <div v-for="item in articleList.list" :key="item._id"
+           :class="`section wow animate__animated animate__backInUp`"
+           data-wow-duration="0.6s"
+           data-wow-iteration="1" data-wow-offset="1" @click="gotoDetail(item._id)">
+        <div class="card">
+          <div class="card-img">
+            <img v-lazy="item.cover"/>
           </div>
-          <div class="divider">
-            <n-divider/>
-          </div>
-          <div class="info">
-            <!--            HappyOutline-->
-            <div class="name">
-              <Icon size="16">
-                <PersonOutline></PersonOutline>
-              </Icon>
-              {{ item.author }}
+          <div class="titleInfo">
+            <div class="title">{{ item.title }}</div>
+            <div class="description">
+              <span>{{ item.description }}</span>
             </div>
-            <div class="time">
-              <Icon size="16">
-                <TimeOutline></TimeOutline>
-              </Icon>
-              {{ formatTime(item.created) }}
-            </div>
-            <div class="see">
-              <Icon size="16">
-                <EyeOutline></EyeOutline>
-              </Icon>
-              {{ item.browse }}
+            <div>
+              <div class="divider">
+                <n-divider/>
+              </div>
+              <div class="info">
+                <!--            HappyOutline-->
+                <div class="name">
+                  <Icon size="16">
+                    <PersonOutline></PersonOutline>
+                  </Icon>
+                  {{ item.author }}
+                </div>
+                <div class="time">
+                  <Icon size="16">
+                    <TimeOutline></TimeOutline>
+                  </Icon>
+                  {{ formatTime(item.created) }}
+                </div>
+                <div class="see">
+                  <Icon size="16">
+                    <EyeOutline></EyeOutline>
+                  </Icon>
+                  {{ item.browse }}
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <div v-if="showPagination" class="pages">
+        <n-pagination v-model:page="fenyeStore.fenye.pagenum" v-model:page-size="fenyeStore.fenye.pagesize"
+                      :page-count="Math.ceil(tootal/pages)"
+                      :prev="nextPage"/>
+      </div>
     </div>
 
-    <div class="pages" v-if="showPagination">
-      <n-pagination :prev="nextPage" v-model:page="pagen" v-model:page-size="pages"
-                    :page-count="Math.ceil(tootal/pages)"/>
-    </div>
+
   </div>
 
 </template>
@@ -56,7 +66,9 @@
 import {NPagination, PaginationInfo, NEmpty, NDivider, NAvatar} from 'naive-ui'
 import {PersonOutline, TimeOutline, EyeOutline} from '@vicons/ionicons5'
 import {Icon} from "@vicons/utils/lib";
-import {onMounted, reactive, ref, computed} from 'vue';
+import {onMounted, reactive, ref, computed, watch} from 'vue';
+import useFenye from "@/stores/useFenye";
+import useUser from "@/stores/useUser";
 import WOW from "wow.js";
 import {getArticleList} from "@/api/article";
 import dayjs from 'dayjs'
@@ -66,6 +78,8 @@ type Data = {
   pagesize: number
   pagenum: number
 }
+const userStore = useUser()
+const fenyeStore = useFenye()
 const router = useRouter()
 const articleList = reactive<any>({list: []})
 const pages = ref<number>(6)
@@ -77,7 +91,7 @@ const nextPage = (info: PaginationInfo) => {
     pagesize: info.pageSize,
     pagenum: info.page
   }
-  getList(data)
+  fenyeStore.setFenye(data)
 }
 const gotoDetail = (id) => {
   router.push(`/article/${id}`)
@@ -85,7 +99,9 @@ const gotoDetail = (id) => {
 const formatTime = computed((item) => () => {
   return dayjs(item).format('YYYY-MM-DD')
 })
-
+watch(() => fenyeStore.fenye, (val) => {
+  getList(val)
+}, {deep: true})
 const getList = async (data: Data) => {
   try {
     const res = await getArticleList(data)
@@ -107,7 +123,6 @@ onMounted(async () => {
     pagesize: pages.value
   }
   await getList(data)
-
   let wow = new WOW({
     boxClass: "wow",
     animateClass: "animated",
@@ -123,20 +138,30 @@ onMounted(async () => {
 })
 
 </script>
-<style scoped lang="less">
+<style lang="less" scoped>
 :deep(.n-pagination .n-pagination-item.n-pagination-item--button) {
   background: transparent;
   border: #fffccc;
 }
 
 .content {
-  width: 100%;
   min-height: calc(100vh - 120px);
   overflow: hidden;
   border-radius: 2px;
   backdrop-filter: var(--c-base-blur);
-  padding: 20px;
-  box-shadow: rgba(182, 182, 186, 0.25) 0px 50px 100px -20px, rgba(197, 192, 192, 0.3) 0px 30px 60px -30px, rgba(155, 159, 164, 0.35) 0px -2px 6px 0px inset;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 5%);
+
+  .HomeTitle {
+    min-height: 120px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .itemContent {
+    background: var(--c-f1f3f4);
+    padding: 20px;
+
+  }
 
   .card {
     height: 230px;
@@ -152,12 +177,12 @@ onMounted(async () => {
 
     &:hover {
       transform: translateY(-10px);
-      box-shadow: #87b1ad62 0 5px 15px;
+      box-shadow: 0 8px 10px rgba(96, 206, 174, 0.3)
     }
 
 
     &:hover img {
-      transform: rotate(8deg) scale(1.1);
+      transform: scale(1.1);
     }
 
     .card-img {
@@ -169,8 +194,8 @@ onMounted(async () => {
       box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
 
       img {
-        width: 150%;
-        height: 150%;
+        width: 110%;
+        height: 110%;
         transition: all .5s;
         opacity: .8;
       }
@@ -178,11 +203,15 @@ onMounted(async () => {
 
 
     .titleInfo {
+      display: grid;
+      align-content: space-between;
+
       .title {
-        font-size: 20px;
+        font-size: 18px;
         color: var(--c-text-666);
         text-align: left;
-        padding: 20px 20px 0 20px;
+        padding: 20px 20px;
+        white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         display: -webkit-box;
@@ -192,8 +221,7 @@ onMounted(async () => {
 
 
       .description {
-        height: 130px;
-        padding: 20px 40px;
+        padding: 10px 40px;
 
         span {
           text-align: left;
@@ -201,7 +229,7 @@ onMounted(async () => {
           color: var(--c-text-777);
           overflow: hidden;
           text-overflow: ellipsis;
-          -webkit-line-clamp: 3;
+          -webkit-line-clamp: 2;
           display: -webkit-box;
           -webkit-box-orient: vertical;
         }
@@ -210,6 +238,7 @@ onMounted(async () => {
       .divider {
         padding-right: 10px;
         padding-bottom: 10px;
+        //padding-top: 37px;
 
         :deep(.n-divider:not(.n-divider--dashed) .n-divider__line) {
           background: var(--c-divider);
@@ -221,9 +250,11 @@ onMounted(async () => {
       }
 
       .info {
-        display: flex;
+        display: grid;
         align-items: center;
-        gap: 20px;
+        grid-template-columns: 1fr 1fr 1fr;
+        //gap: 10px;
+        padding-bottom: 10px;
 
         .name, .time, .see {
           padding-left: 20px;
@@ -261,5 +292,58 @@ onMounted(async () => {
     fill: currentColor;
     overflow: hidden;
   }
+}
+
+@media screen and (max-width: 750px) {
+  .content {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr;
+  }
+
+  .content .card {
+    height: 330px;
+    margin-bottom: 40px;
+    padding: 3px;
+    display: grid;
+    grid-template-columns: 1fr;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-radius: 10px;
+    transition: all .5s;
+    box-shadow: rgba(0, 0, 0, 0.1) 0 0 5px 0, rgba(0, 0, 0, 0.1) 0 0 1px 0;
+    cursor: url('@/assets/link.cur'), pointer;
+
+    .titleInfo {
+      .title {
+        padding: 0 20px;
+      }
+    }
+
+
+    .card-img {
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 10px;
+      height: 200px;
+      box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+      position: relative;
+
+      img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 330px;
+        height: 330px;
+        transform: translate(-50%, -50%);
+        transition: all .5s;
+        opacity: .8;
+      }
+    }
+  }
+
+
 }
 </style>

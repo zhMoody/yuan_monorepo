@@ -15,6 +15,7 @@
   src: url("./fonts/rz.ttf") format("truetype");
 }
 
+
 a {
   text-decoration: none;
 }
@@ -26,7 +27,7 @@ li {
 :root {
   --c-text-primary: #191919;
   --c-text-secondary: #737374;
-  --c-text-666: #666;
+  --c-text-666: #777;
   --c-text-777: #777;
   --c-f9f9f930: #F9F9F930;
   --c-border-primary: #ccc;
@@ -38,6 +39,10 @@ li {
   --c-bg-button: #fff;
   --c-base-blur: blur(50px);
   --c-divider: #f3f1f1;
+  --c-907e7e30: #907e7e30;
+  --c-907e7e28: #907E7E28;
+  --c-7F780AFF: #7F780AFF;
+  --c-f1f3f4: #f1f3f4;
 }
 
 :root.dark-theme {
@@ -67,10 +72,10 @@ body {
   background: var(--c-bg-body);
   transform: background-color 1s ease;
   color: var(--c-text-primary);
-  font-family: 'rz', "yezi", serif;
-  cursor: url('../assets/mouse.cur'), default;
+  font-family: 'rz', serif;
+  background: center center no-repeat fixed;
   background-size: 100% 100%;
-  padding: 0 220px;
+  //padding: 0 220px;
 }
 
 body::after {
@@ -81,7 +86,7 @@ body::after {
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('../assets/ow.jpg') no-repeat top center fixed;
+  //background: url("@/assets/ow.jpg") var(--c-bg-body) no-repeat top center fixed;
   z-index: -1;
 }
 
@@ -114,4 +119,10 @@ body::-webkit-scrollbar-thumb {
   vertical-align: -0.15em;
   fill: currentColor;
   overflow: hidden;
+}
+
+@media screen and (max-width: 1350px) {
+  body {
+    padding: 0;
+  }
 }

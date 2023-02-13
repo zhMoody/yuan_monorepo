@@ -41,7 +41,16 @@ export const frameIn: Array<RouteRecordRaw> = [
           transition: 'animate__fadeIn'
         },
       },
-
+      {
+        path: '/test',
+        name: 'test',
+        component: () => import('@/views/test.vue'),
+        meta: {
+          title: 'test',
+          keepAlive: false,
+          transition: 'animate__fadeIn'
+        },
+      },
     ],
   },
 ];

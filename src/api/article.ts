@@ -5,7 +5,7 @@ import request from "@/libs/request";
  *
  * data {pagesize:number, pagenum:number}
  */
-export const getArticleList = (data): Promise<Active.RootObject> => request({
+export const getArticleList = (data): Promise<Article.RootObject> => request({
   method: 'GET',
   url: `/article?pagesize=${data.pagesize}&pagenum=${data.pagenum}`,
 })

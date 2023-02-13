@@ -1,6 +1,8 @@
 import axios, {AxiosError} from 'axios';
 import storage from 'store';
+import {useNotification} from "naive-ui/lib";
 
+const notification = useNotification()
 const {VITE_APP_BASE_URL} = import.meta.env;
 
 const request = axios.create({
@@ -79,7 +81,7 @@ request.interceptors.response.use((response) => {
       return dataAxios;
     case 401:
       // [ 示例 ] 其它和后台约定的 code
-      return 'xxx';
+      return dataAxios;
     default:
       // 不是正确的 code
       return '不是正确的code';

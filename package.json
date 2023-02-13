@@ -14,7 +14,7 @@
     "current-device": "0.10.2",
     "dayjs": "^1.11.7",
     "lodash": "4.17.21",
-    "md-editor-v3": "^1.11.14",
+    "md-editor-v3": "2.8.0",
     "mitt": "2.1.0",
     "nprogress": "0.2.0",
     "pinia": "^2.0.23",

@@ -1,37 +1,119 @@
 <template>
-  <div>
-    <div style='width: 100px;height: 80px; background-color: #fffccc; font-size: 16px;color: #000;'>223</div>
-    <div style='width: 200px;height: 80px; background-color: #eeeeee; font-size: 16px;color: #000;'>223</div>
-    <div style='width: 300px;height: 80px; background-color: #42b983; font-size: 16px;color: #000;'>223</div>
-    <div style='width: 400px;height: 80px; background-color: #2c3e50; font-size: 16px;color: #000;'>223</div>
-    <div style='width: 500px;height: 80px; background-color: #42b983; font-size: 16px;color: #000;'>223</div>
-    <IButton :content="isOpen ? '退出全屏' : '全屏'" @click="handleOpen"></IButton>
-    <StaticFile src="http://m704.music.126.net/20221029022607/28ddf0f4594595d03bf502eb2c0ff029/jdyyaac/obj/w5rDlsOJwrLDjj7CmsOj/14096422441/b511/294f/355f/a306c5df86456394ff9d9fb1f7d3e802.m4a?authSecret=000001841fc138e515430aaba050ed19.m4a"
-                    type="music" controls></StaticFile>
+  <div class="text">当前模拟数据量:{{ state.DataList.length }}条</div>
+  <div class="box">
+    <div ref="scrollBox" class="container" @scroll="doscroll">
+      <div ref="items">
+        <div class="item" v-for="item in virtualList" :key="item.tid">
+          <img v-lazy="item.src" alt=""/>
+          <span>{{ item.text }}</span>
+        </div>
+      </div>
+    </div>
+    <code class="code">{{ virtualList }}</code>
   </div>
 </template>
-<script lang='ts' setup>
 
-import useFullscreen from '@/hooks/useFullscreen';
-import { ref } from 'vue';
+<script lang="ts" setup>
+import {arr} from './testData'
+import {reactive, ref, computed, watchEffect, nextTick} from "vue";
 
-const openFullscreen = useFullscreen()
-const isOpen = ref<boolean>(false)
+const scrollBox = ref<null | HTMLDivElement>(null);
+const items = ref<null | HTMLDivElement>(null);
 
-const handleOpen = () => {
-  isOpen.value = !isOpen.value
-  if (isOpen.value) {
-    openFullscreen.openScreenfull()
+const state = reactive({
+  DataList: arr,
+  ItemBoxHeight: 0,
+  itemNum: 1,
+  startIndex: 0,
+});
+
+const virtualList = computed(() => {
+  let endIndex = state.startIndex + state.itemNum;
+  if (endIndex >= state.DataList.length) endIndex = state.DataList.length;
+  return state.DataList.slice(state.startIndex, endIndex);
+});
+
+const doscroll = () => {
+  const curScrollTop = scrollBox.value!.scrollTop;
+  if (curScrollTop > state.ItemBoxHeight) {
+    const index = ~~(scrollBox.value!.scrollTop / state.ItemBoxHeight);
+    items.value!.style.setProperty(
+      "padding-top",
+      `${index * state.ItemBoxHeight}px`
+    );
+    state.startIndex = index;
   } else {
-    openFullscreen.closeScreenfull()
+    items.value!.style.setProperty("padding-top", "0px");
+    state.startIndex = 0;
+  }
+};
+
+watchEffect(() => {
+  if (state.DataList.length > 0) {
+    nextTick(() => {
+      // 计算每行高度
+      // @ts-ignore
+      state.ItemBoxHeight = items.value!.children[0].offsetHeight;
+      //计算屏幕内能显示的行数   +5是防止下拉过快出现白屏
+      state.itemNum = ~~(scrollBox.value!.clientHeight / state.ItemBoxHeight) + 5;
+      // 设置列表总高度
+      const ListHeight = state.ItemBoxHeight * state.DataList.length;
+      items.value!.style.setProperty("height", `${ListHeight}px`);
+    });
+  }
+});
+</script>
+
+<style scoped lang="less">
+.text {
+  width: 500px;
+  font-size: 36px;
+  margin: 0 auto;
+}
+
+.box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .code {
+    margin-left: 10px;
+    padding: 10px 10px;
+    border: 1px dotted #000;
+    border-radius: 10px;
+    background-color: #f1f1f1;
+    width: 400px;
+    font-size: 16px;
   }
 }
-</script>
-<style scoped lang="less">
-button {
+
+.container {
+  height: 250px;
+  overflow-y: scroll;
+  width: 250px;
+}
+
+.container::-webkit-scrollbar {
+  width: 3px;
+  background: rgb(73, 73, 73);
+}
+
+.container::-webkit-scrollbar-thumb {
+  background-color: rgba(218, 220, 222, 0.74);
+}
+
+.container .item {
   height: 30px;
-  border: 1px double #000;
-  padding: 0 10px;
-  font-size: 16px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+  
+}
+
+.container .item img {
+  width: 30px;
+  height: 30px;
 }
 </style>

@@ -3,20 +3,20 @@
     <div class="usenbox">
       <div class="userAvatar">
         <n-avatar
-          bordered
-          round
           :size="100"
           :src="store.userInfo.userAvatar"
+          bordered
+          round
         />
       </div>
       <div class="introduction">
-        <span style="margin-right: 5px;font-size: 16px;color: #666">{{ store.userInfo.userName }}</span>
-        <Icon size="12" color="#666">
+        <span style="margin-right: 5px;font-size: 16px;color:var(--c-text-666)">{{ store.userInfo.userName }}</span>
+        <Icon color="#666" size="12">
           <CaretDown tag="span"></CaretDown>
         </Icon>
       </div>
       <div style="height: 50px">
-        <div class="signature" ref='signature'></div>
+        <div ref='signature' class="signature"></div>
       </div>
       <div class="posa"></div>
     </div>
@@ -25,34 +25,34 @@
       <div class="menu_card">
         <ul class="menu">
           <li class="text">导航</li>
-          <li data-aos="fade-up" v-for="navigation in navigationList" :key="navigation.path">
+          <li v-for="navigation in navigationList" :key="navigation.path" data-aos="fade-up">
             <router-link :to="navigation.path">
-              <svg class="icon" aria-hidden="true">
+              <svg aria-hidden="true" class="icon">
                 <use :xlink:href="navigation.icon"></use>
               </svg>
 
               <span style='padding:0 10px'> {{ navigation.name }}</span>
             </router-link>
           </li>
-          <li data-aos="fade-up" v-for="(item, index) in menuList" :key="item.name" class="oneMenu"
-              @click="showToggle(item, index)">
-            <div
-              :class="item.isSubShow ? 'active' : 'myactive'"
-            >
-              <svg class="icon" aria-hidden="true">
-                <use :xlink:href="item.icon"></use>
-              </svg>
-              <span>{{ item.name }}</span>
-              <svg class="icon float" aria-hidden="true">
-                <use xlink:href="#icon-youjiantou"></use>
-              </svg>
-            </div>
-            <ul data-aos="fade-up" v-show="item.isSubShow" class="menu-item">
-              <li v-for="subItem in item.subItems" :key="subItem.name">
-                <router-link :to="subItem.path">{{ subItem.name }}</router-link>
-              </li>
-            </ul>
-          </li>
+          <!--          <li v-for="(item, index) in menuList" :key="item.name" class="oneMenu" data-aos="fade-up"-->
+          <!--              @click="showToggle(item, index)">-->
+          <!--            <div-->
+          <!--              :class="item.isSubShow ? 'active' : 'myactive'"-->
+          <!--            >-->
+          <!--              <svg aria-hidden="true" class="icon">-->
+          <!--                <use :xlink:href="item.icon"></use>-->
+          <!--              </svg>-->
+          <!--              <span>{{ item.name }}</span>-->
+          <!--              <svg aria-hidden="true" class="icon float">-->
+          <!--                <use xlink:href="#icon-youjiantou"></use>-->
+          <!--              </svg>-->
+          <!--            </div>-->
+          <!--            <ul v-show="item.isSubShow" class="menu-item" data-aos="fade-up">-->
+          <!--              <li v-for="subItem in item.subItems" :key="subItem.name">-->
+          <!--                <router-link :to="subItem.path">{{ subItem.name }}</router-link>-->
+          <!--              </li>-->
+          <!--            </ul>-->
+          <!--          </li>-->
           <li id="text" class="text">构成</li>
           <li
             v-for="(item, index) in navItemList"
@@ -61,11 +61,11 @@
             @click="showSubItem(item, index)"
           >
             <div :class="item.isSubShow ? 'active' : 'myactive'">
-              <svg class="icon" aria-hidden="true">
+              <svg aria-hidden="true" class="icon">
                 <use :xlink:href="item.icon"></use>
               </svg>
               <span>{{ item.name }}</span>
-              <svg class="icon float" aria-hidden="true">
+              <svg aria-hidden="true" class="icon float">
                 <use xlink:href="#icon-youjiantou"></use>
               </svg>
             </div>
@@ -94,49 +94,49 @@ const router = useRouter()
 const store = useUserStore()
 const signature = ref<HTMLDivElement>()
 onMounted(() => {
-  useDynamicText(signature.value, '从此烟雨落青城 一人撑伞两人行。从此烟雨落青城 一人撑伞两人行。')
+  useDynamicText(signature.value, '从此烟雨落青城 一人撑伞两人行。')
 })
 
-const menuList = reactive([
-  {
-    name: "菜单一",
-    isSubShow: false,
-    icon: "#icon-category",
-    subItems: [
-      {
-        name: "二级目录",
-        path: "/links"
-      },
-      {
-        name: "二级目录",
-        path: "/"
-      },
-      {
-        name: "二级目录",
-        path: "/"
-      },
-      {
-        name: "二级目录",
-        path: "/"
-      }
-    ]
-  },
-  {
-    name: "菜单二",
-    isSubShow: false,
-    icon: "#icon-biaoqian",
-    subItems: [
-      {
-        name: "二级目录",
-        path: "/"
-      },
-      {
-        name: "二级目录",
-        path: "/"
-      }
-    ]
-  }
-])
+// const menuList = reactive([
+//   {
+//     name: "菜单一",
+//     isSubShow: false,
+//     icon: "#icon-category",
+//     subItems: [
+//       {
+//         name: "二级目录",
+//         path: "/acg"
+//       },
+//       {
+//         name: "二级目录",
+//         path: "/test"
+//       },
+//       {
+//         name: "二级目录",
+//         path: "/"
+//       },
+//       {
+//         name: "二级目录",
+//         path: "/"
+//       }
+//     ]
+//   },
+//   {
+//     name: "菜单二",
+//     isSubShow: false,
+//     icon: "#icon-biaoqian",
+//     subItems: [
+//       {
+//         name: "二级目录",
+//         path: "/"
+//       },
+//       {
+//         name: "二级目录",
+//         path: "/"
+//       }
+//     ]
+//   }
+// ])
 const navItemList = reactive([
   {
     name: "分类",
@@ -198,19 +198,14 @@ const navItemList = reactive([
 ])
 const navigationList = reactive([
   {
-    name: " 首页",
+    name: "首页",
     path: "/",
     icon: "#icon-zhuye"
   },
   {
-    name: "YUAN官网",
-    path: "/links",
+    name: "关于",
+    path: "/acg",
     icon: "#icon-biaoqian1"
-  },
-  {
-    name: "YUAN-使用文档",
-    path: "/s",
-    icon: "#icon-wendang"
   }
 ])
 
@@ -233,7 +228,7 @@ const showSubItem = (item, ind) => {
   item.isSubShow = !item.isSubShow;
 }
 </script>
-<style scoped lang="less">
+<style lang="less" scoped>
 .subject {
   border-radius: 3px 3px 10px 0;
   overflow: hidden;
@@ -243,16 +238,16 @@ const showSubItem = (item, ind) => {
     position: relative;
     backdrop-filter: var(--c-base-blur);
 
-    &::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      background: url("@/assets/waves.png") no-repeat;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-    }
+    //&::after {
+    //  content: '';
+    //  position: absolute;
+    //  top: 0;
+    //  left: 0;
+    //  background: url("@/assets/waves.png") no-repeat;
+    //  width: 100%;
+    //  height: 100%;
+    //  z-index: -1;
+    //}
 
     .posa {
       position: absolute;

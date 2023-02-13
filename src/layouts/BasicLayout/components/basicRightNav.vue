@@ -3,19 +3,19 @@
     <div class="menu">
       <div class="menu-header">
         <div class="theme-switcher">
-          <input type="radio" name="activePage" id="newArticle-page">
+          <input id="newArticle-page" name="activePage" type="radio">
           <label for="newArticle-page" @click="getNewPage('newArticle-page')">
             <Icon size="25">
               <HappyOutline></HappyOutline>
             </Icon>
           </label>
-          <input type="radio" name="activePage" id="mostViewed-page">
+          <input id="mostViewed-page" name="activePage" type="radio">
           <label for="mostViewed-page" @click="getNewPage('mostViewed-page')">
             <Icon size="25">
               <HeartOutline></HeartOutline>
             </Icon>
           </label>
-          <input type="radio" name="activePage" id="recommend-page">
+          <input id="recommend-page" name="activePage" type="radio">
           <label for="recommend-page" @click="getNewPage('recommend-page')">
             <Icon size="25">
               <GiftOutline></GiftOutline>
@@ -29,18 +29,32 @@
       <NDivider></NDivider>
     </div>
     <div>
-      <div class="title">{{ res }}</div>
+      <div class="title">{{ RightTitle }}</div>
+    </div>
+    <div v-if="route.params.id" class="directory">
+      <div class="direTitle">
+        <h5 style="color: var(--c-text-666)">文章目录</h5>
+      </div>
+      <div class="item">
+        <div v-for="(item,i) in articleStore.titleList.list" :key="item.text" class="direListItem"
+             @click="sectionChange(`yuan-${item.level}-${i+1}`)">
+          <span> {{ item.text }}</span>
+        </div>
+      </div>
     </div>
   </div>
-
 </template>
 <script lang="ts" setup>
 import {GiftOutline, HeartOutline, HappyOutline} from '@vicons/ionicons5'
 import {Icon} from "@vicons/utils/lib";
 import {NDivider} from 'naive-ui'
-import {ref, watchEffect} from 'vue'
+import {onMounted, ref, watchEffect} from 'vue'
+import useArticle from "@/stores/useArticle";
+import {useRoute} from "vue-router";
 
-const res = ref('热门文章')
+const route = useRoute()
+const articleStore = useArticle()
+const RightTitle = ref('热门文章')
 const nowPage = ref<string>('newArticle-page')
 const getNewPage = (key) => {
   nowPage.value = key
@@ -48,12 +62,54 @@ const getNewPage = (key) => {
 watchEffect(() => {
   switch (nowPage.value) {
     case 'newArticle-page':
-      return res.value = '最新文章'
+      return RightTitle.value = '最新文章'
     case 'mostViewed-page':
-      return res.value = '最多浏览'
+      return RightTitle.value = '最多浏览'
     case 'recommend-page':
-      res.value = '文章推荐'
+      RightTitle.value = '文章推荐'
   }
+})
+
+const sectionChange = (child) => {
+  const scrollBox = document.documentElement; // 容器
+  let distance = scrollBox.scrollTop;
+  const curTag = document.querySelector("#" + child); // 节点tag
+  const offsetTop = curTag.offsetTop - 20; // 滚动距离
+  let step = offsetTop / 50;
+  if (offsetTop > distance) {
+    console.log(111)
+    smoothDown();
+  } else {
+    const newTotal = distance - offsetTop;
+    step = newTotal / 50;
+    smoothUp();
+  }
+  scrollBox.scrollTop = offsetTop;
+
+  function smoothDown() {
+    if (distance < offsetTop) {
+      distance += step;
+      scrollBox.scrollTop = distance;
+      setTimeout(smoothDown, 10);
+    } else {
+      scrollBox.scrollTop = offsetTop;
+    }
+  }
+
+  function smoothUp() {
+    if (distance > offsetTop) {
+      distance -= step;
+      scrollBox.scrollTop = distance;
+      setTimeout(smoothUp, 10);
+    } else {
+      scrollBox.scrollTop = offsetTop;
+    }
+  }
+}
+
+
+onMounted(() => {
+
 })
 </script>
 <style lang="less" scoped>
@@ -139,6 +195,59 @@ watchEffect(() => {
 
   :deep(.n-divider:not(.n-divider--vertical)) {
     margin: 0;
+  }
+}
+
+.title {
+  min-height: 220px;
+}
+
+.directory {
+  position: sticky;
+  top: 50px;
+  right: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 300px);
+  overflow: hidden;
+
+  .direTitle {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: var(--c-text-666);
+
+  }
+
+  .item {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+    border-radius: 5px;
+    overflow: scroll;
+
+    &::-webkit-scrollbar {
+      width: 3px !important;
+      background: transparent !important;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: transparent !important;
+    }
+  }
+
+  .direListItem {
+    padding: 10px 0 10px 20px;
+    transition: all .3s;
+    cursor: url('@/assets/link.cur'), pointer;
+    color: var(--c-text-666);
+    font-size: 12px;
+
+    a {
+      color: var(--c-text-666);
+    }
+
+    &:hover {
+      background: var(--c-907e7e28);
+    }
   }
 }
 </style>
