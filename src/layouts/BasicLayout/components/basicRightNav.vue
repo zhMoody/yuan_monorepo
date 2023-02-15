@@ -223,10 +223,12 @@ onMounted(() => {
     box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
     border-radius: 5px;
     overflow: scroll;
+    background: var(--c-doclistBg);
 
     &::-webkit-scrollbar {
       width: 3px !important;
-      background: transparent !important;
+      height: 0;
+      //background: transparent !important;
     }
 
     &::-webkit-scrollbar-thumb {
@@ -234,19 +236,21 @@ onMounted(() => {
     }
   }
 
+  //--c-doclistBg: #1c1c1c;
+  //--c-doclistBg-item-hover: #0d0d0d;
   .direListItem {
     padding: 10px 0 10px 20px;
     transition: all .3s;
     cursor: url('@/assets/link.cur'), pointer;
     color: var(--c-text-666);
     font-size: 12px;
-
-    a {
-      color: var(--c-text-666);
-    }
+    //
+    //a {
+    //  color: var(--c-text-666);
+    //}
 
     &:hover {
-      background: var(--c-907e7e28);
+      background: var(--c-doclistBg-item-hover);
     }
   }
 }

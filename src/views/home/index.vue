@@ -10,18 +10,18 @@
     </div>
     <div class="itemContent">
       <div v-for="item in articleList.list" :key="item._id"
-           :class="`section wow animate__animated animate__backInUp`"
+           :class="`section wow animate__animated animate__fadeInUp`"
            data-wow-duration="0.6s"
            data-wow-iteration="1" data-wow-offset="1" @click="gotoDetail(item._id)">
         <div class="card">
           <div class="card-img">
-            <img v-lazy="item.cover"/>
+            <img v-lazy="item.imgUrl"/>
           </div>
           <div class="titleInfo">
             <div class="title">{{ item.title }}</div>
-            <div class="description">
-              <span>{{ item.description }}</span>
-            </div>
+            <!--            <div class="description">-->
+            <!--              <span>{{ item.description }}</span>-->
+            <!--            </div>-->
             <div>
               <div class="divider">
                 <n-divider/>
@@ -57,8 +57,6 @@
                       :prev="nextPage"/>
       </div>
     </div>
-
-
   </div>
 
 </template>
@@ -148,13 +146,14 @@ onMounted(async () => {
   min-height: calc(100vh - 120px);
   overflow: hidden;
   border-radius: 2px;
-  backdrop-filter: var(--c-base-blur);
   box-shadow: 0 1px 3px rgb(0 0 0 / 5%);
+  background: var(--c-f1f3f4);
 
   .HomeTitle {
     min-height: 120px;
     padding: 20px;
     text-align: center;
+    background-color: var(--c-f9f9f930);
   }
 
   .itemContent {
@@ -164,16 +163,16 @@ onMounted(async () => {
   }
 
   .card {
-    height: 230px;
+    //height: 230px;
     margin-bottom: 20px;
-    padding: 3px;
     display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 10px;
-    border-radius: 10px;
+    //grid-template-columns: 300px 1fr;
+    gap: 20px;
+    border-radius: 5px;
     transition: all .5s;
     box-shadow: rgba(0, 0, 0, 0.1) 0 0 5px 0, rgba(0, 0, 0, 0.1) 0 0 1px 0;
     cursor: url('@/assets/link.cur'), pointer;
+    background: var(--c-bg-bodyFFF);
 
     &:hover {
       transform: translateY(-10px);
@@ -186,18 +185,17 @@ onMounted(async () => {
     }
 
     .card-img {
+      height: 250px;
       overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
-      border-radius: 10px;
+      border-radius: 5px 5px 0 0;
       box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
 
       img {
-        width: 110%;
-        height: 110%;
+        width: 100%;
         transition: all .5s;
-        opacity: .8;
       }
     }
 
@@ -210,11 +208,10 @@ onMounted(async () => {
         font-size: 18px;
         color: var(--c-text-666);
         text-align: left;
-        padding: 20px 20px;
+        padding: 15px 20px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        display: -webkit-box;
         -webkit-line-clamp: 1;
         -webkit-box-orient: vertical;
       }
@@ -236,12 +233,12 @@ onMounted(async () => {
       }
 
       .divider {
-        padding-right: 10px;
-        padding-bottom: 10px;
-        //padding-top: 37px;
+        padding: 0 10px;
 
         :deep(.n-divider:not(.n-divider--dashed) .n-divider__line) {
+          //background: var(--c-divider);
           background: var(--c-divider);
+          margin-bottom: 10px;
         }
 
         :deep(.n-divider:not(.n-divider--vertical)) {
@@ -335,11 +332,11 @@ onMounted(async () => {
         position: absolute;
         top: 50%;
         left: 50%;
-        width: 330px;
-        height: 330px;
+        //width: 100%;
+        //height: 100%;
         transform: translate(-50%, -50%);
         transition: all .5s;
-        opacity: .8;
+        //opacity: .8;
       }
     }
   }

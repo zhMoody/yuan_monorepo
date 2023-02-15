@@ -32,7 +32,7 @@
           <Icon size="16">
             <StarOutline></StarOutline>
           </Icon>
-          {{ articleData.detail.articleDetail?.category_id.name }}
+          {{ articleData.detail.articleDetail?.category_id?.name }}
         </div>
       </div>
     </div>
@@ -129,11 +129,12 @@ onMounted(async () => {
 .articleDetail {
   backdrop-filter: var(--c-base-blur);
   min-height: calc(100vh - 120px);
-  //box-shadow: rgba(182, 182, 186, 0.25) 0px 50px 100px -20px, rgba(197, 192, 192, 0.3) 0px 30px 60px -30px, rgba(155, 159, 164, 0.35) 0px -2px 6px 0px inset;
+  background: var(--c-content-bg);
 }
 
 .title {
   min-height: 120px;
+  background: var(--c-f9f9f930);
 }
 
 .content {
@@ -144,7 +145,7 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     border-radius: 5px;
-    background: #ffffff;
+    background-color: var(--c-f9f9f930);
     gap: 5px;
     cursor: url('@/assets/link.cur'), pointer;
     transition: all .5s;
@@ -156,7 +157,8 @@ onMounted(async () => {
   .edit {
     padding: 20px;
     border-radius: 5px;
-    background: #ffffff;
+    background-color: var(--c-f9f9f930);
+    transition: all .3s;
   }
 
   .hText {
@@ -172,13 +174,17 @@ onMounted(async () => {
   }
 }
 
+:deep(.default-theme blockquote) {
+  background: var(--c-blockquote);
+}
 
 :deep(pre) {
   white-space: break-spaces;
   overflow: scroll;
 
   &::-webkit-scrollbar {
-    width: 0px;
+    width: 0;
+    height: 0;
     background: rgb(73, 73, 73);
   }
 
@@ -189,6 +195,7 @@ onMounted(async () => {
 
 .title {
   padding: 20px;
+  color: var(--c-text-666);
 }
 
 .title-h1 {

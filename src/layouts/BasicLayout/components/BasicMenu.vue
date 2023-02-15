@@ -230,13 +230,11 @@ const showSubItem = (item, ind) => {
 </script>
 <style lang="less" scoped>
 .subject {
-  border-radius: 3px 3px 10px 0;
   overflow: hidden;
 
   .usenbox {
     padding: 30px 20px 0 20px;
     position: relative;
-    backdrop-filter: var(--c-base-blur);
 
     //&::after {
     //  content: '';
@@ -290,7 +288,6 @@ const showSubItem = (item, ind) => {
     overflow-y: auto;
     padding-bottom: 100px;
     padding-top: 20px;
-    backdrop-filter: var(--c-base-blur);
 
     &::-webkit-scrollbar {
       width: 0 !important;

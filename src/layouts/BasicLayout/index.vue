@@ -19,6 +19,7 @@
           </router-view>
           <basic-footer/>
         </div>
+        <n-back-top :right="menuStore.isShowMenu.menwWidth > 750 ? 100:10"/>
         <BasicRightNav class="basic-right-nav"></BasicRightNav>
       </div>
     </div>
@@ -28,7 +29,8 @@
 <script lang="ts" setup>
 // import BasicHeader from './components/BasicHeader.vue';
 // import BasicFooter from './components/BasicFooter.vue';
-import {defineAsyncComponent, watchEffect, watch, ref} from 'vue';
+import {defineAsyncComponent, watchEffect, watch, ref, onMounted} from 'vue';
+import {NBackTop} from 'naive-ui'
 
 const BasicHeader = defineAsyncComponent(() => import('./components/BasicHeader.vue'));
 const BasicMenu = defineAsyncComponent(() => import('./components/BasicMenu.vue'));
@@ -37,6 +39,7 @@ const BasicFooter = defineAsyncComponent(() => import('./components/BasicFooter.
 import useMenu from "@/stores/useMenu";
 
 const menuStore = useMenu()
+
 watchEffect(() => {
   if (menuStore.isShowMenu.menwWidth! >= 750) {
     menuStore.isShow(false)
@@ -59,6 +62,9 @@ watch(() => menuStore.isShowMenu.ShowMenu, (val) => {
     grid1fr.value = '260px 1fr'
   }
 })
+onMounted(() => {
+  console.log("\n %c XXXXXXXX | https://XXXXXXX.cn", "color:#fff;background: linear-gradient(to right , #7A88FF, #d26aff);padding:5px;border-radius: 10px;");
+})
 </script>
 
 <style lang="less" scoped>
@@ -67,6 +73,11 @@ watch(() => menuStore.isShowMenu.ShowMenu, (val) => {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  background: var(--c-bg-body);
+
+  :deep(.n-back-top) {
+    background-color: var(--c-f9f9f930) !important;
+  }
 
   .basic {
     display: grid;
@@ -90,11 +101,16 @@ watch(() => menuStore.isShowMenu.ShowMenu, (val) => {
       }
 
       &::-webkit-scrollbar-thumb {
-        background-color: rgba(218, 220, 222, 0.74);
+        background-color: var(--c-divider);
       }
+    }
+
+    .basic-right-nav {
+      background-color: var(--c-f9f9f930);
     }
   }
 }
+
 
 .fade-enter-active,
 .fade-leave-active {

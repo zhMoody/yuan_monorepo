@@ -1,56 +1,60 @@
 <template>
   <div class="music">
-    <div class="player">
-      <div class="cover">
-        <n-avatar
-          :size="40"
-          :src="options.musicImg"
-          bordered
-          round
-        />
-      </div>
-      <div class="switch">
-        <div class="songName">{{ options.musicTitle || '没有可播放的歌曲' }}</div>
-        <div class="songOption">
-          <div class="songOption-icon">
-           <span @click="musicPlay('pre')">
-              <SvgIcon color="#666" name="rewind"></SvgIcon>
-           </span>
-            <span @click="musicPlay('play')">
-              <SvgIcon :name=" options.play ? 'pause' : 'play'" color="#666"></SvgIcon>
-            </span>
-
-            <span @click="musicPlay('next')">
-              <SvgIcon color="#666" name="fast-forward"></SvgIcon>
-            </span>
-            <span>{{ options.currentTime || '00:00' }}</span>
-          </div>
-          <div class="Progress">
-            <div :style="{width: options.currentProgressTime + '%'}" class="onProgress">
-              <span></span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="music-option">
       <div class="btn" @click.self="showBox">
-        <Icon color="#666" size="24" @click="showBox">
+        <Icon color="#777" size="24" @click="showBox">
           <BowlingBallOutline tag="span"></BowlingBallOutline>
         </Icon>
       </div>
       <div class="music-posa wow animate__animated animate__fadeIn">
-        <div class="text">当前歌单歌曲数量: {{ state.DataList.length }}</div>
+        <div class="player">
+          <div class="cover">
+            <n-avatar
+              :size="40"
+              :src="options.musicImg"
+              bordered
+              round
+            />
+          </div>
+          <div class="switch">
+            <div class="songName">{{ options.musicTitle || '没有可播放的歌曲' }}</div>
+            <div class="songOption">
+              <div class="songOption-icon">
+           <span @click="musicPlay('pre')">
+              <SvgIcon color="var(--c-text-666)" name="rewind"></SvgIcon>
+           </span>
+                <span @click="musicPlay('play')">
+              <SvgIcon :name=" options.play ? 'pause' : 'play'" color="var(--c-text-666)"></SvgIcon>
+            </span>
+
+                <span @click="musicPlay('next')">
+              <SvgIcon color="var(--c-text-666)" name="fast-forward"></SvgIcon>
+            </span>
+                <span style="color: var(--c-text-666);user-select: none">{{ options.currentTime || '00:00' }}</span>
+              </div>
+              <div class="Progress">
+                <input v-model="options.sliderVal" :max="options.sliderMax"
+                       :min="options.sliderMin" class="range" type="range" @change="handleChange($event)">
+                <!--            <div :style="{width: options.currentProgressTime + '%'}" class="onProgress">-->
+                <!--              <span></span>-->
+                <!--            </div>-->
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="box">
           <div ref="scrollBox" class="container" @scroll="doscroll">
-            <div ref="items">
-              <div v-for="item in virtualList" :key="item" ref="item" :style="{
-                color:options.index + 1 === item.id ? 'var(--c-7F780AFF)' : 'var(--c-text-666);',
-                background:options.index + 1 === item.id ? 'var(--c-907e7e30)' : 'var(--c-bg-body)',
-                   }" class="item"
+            <div ref="items" class="itemss">
+              <div v-for="item in virtualList" :key="item" ref="item"
+                   :class="'item'+item.id"
+                   :style="{
+                      color:options.index + 1 === item.id ? 'var(--c-7F780AFF)' : 'var(--c-text-666)',
+                      background:options.index + 1 === item.id ? 'var(--c-musiclist-item-bg)' : 'var(--c-musiclist-bg)',
+                      }"
+                   class="item"
                    @click="handlerPlay(item.id)">
                 <span>
-                  {{ item.id }}  {{ item.name }}
+                  {{ item.id }}.  {{ item.name }}
                 </span>
                 <span>
                   {{ item.artist }}
@@ -73,16 +77,6 @@ import {NAvatar} from 'naive-ui'
 import {reactive, onMounted, ref, withDefaults, watchEffect, computed, nextTick, watch} from 'vue'
 import {getMusicList} from "@/api/music";
 
-// 关联歌单
-const handlerPlay = (id) => {
-  if (!options.player[id]) {
-    // 没值触发新的播放
-    options.index = state.DataList.findIndex((x) => x.id === id);
-    console.log(options.index);
-    options.play = false;
-  }
-  musicPlay("play")
-}
 
 interface Options {
   flag: boolean,
@@ -105,24 +99,9 @@ interface Options {
   currentProgressTime: number | null
 }
 
-interface Props {
-  isShowMusicBox?: boolean,
-}
-
-const translate = ref('translateY(-400px)')
+const translate = ref('0')
 const op = ref(0)
 const showPosa = ref(false)
-const showBox = () => {
-  showPosa.value = !showPosa.value
-  if (showPosa.value) {
-    translate.value = 'translateY(0)'
-    op.value = 1
-  } else {
-    translate.value = 'translateY(-400px)'
-    op.value = 0
-  }
-}
-
 let singeBox = ref<HTMLAudioElement | undefined>()//audio对象
 const options = reactive<Options>({
   flag: false,
@@ -149,11 +128,38 @@ const items = ref<HTMLDivElement | null>()
 const state = reactive<{ DataList: Array<MusicTypes.Datum>, ItemBoxHeight: number, itemNum: number, startIndex: number }>({
   DataList: [],
   ItemBoxHeight: 0,
-  itemNum: 100,
+  itemNum: 9,
   startIndex: 0,
 })
-// ---- 音乐控件---
 
+
+const showBox = () => {
+  if (showPosa.value) {
+    translate.value = '0'
+    op.value = 0
+  } else {
+    translate.value = '320px'
+    op.value = 1
+  }
+  showPosa.value = !showPosa.value
+}
+
+// ---- 音乐控件---
+// 关联歌单
+const handlerPlay = (id) => {
+  if (!options.player[id]) {
+    // 没值触发新的播放
+    options.index = state.DataList.findIndex((x) => x.id === id);
+    console.log(options.index);
+    options.play = false;
+    showPosa.value = !showPosa.value
+  }
+  musicPlay("play")
+}
+
+const handleChange = (e) => {
+  singeBox.value!.currentTime = e.target.value
+}
 const musicPlay = (flag) => {
   switch (flag) {
     case "pre":
@@ -278,6 +284,7 @@ const doscroll = () => {
 }
 watchEffect(() => {
   if (state.DataList.length >= 0) {
+
     nextTick(() => {
       // 计算每行高度
       // @ts-ignore
@@ -291,7 +298,13 @@ watchEffect(() => {
   }
 })
 //--------------虚拟列表------------------
-
+watch(() => options.index, (val) => {
+  // @ts-ignore
+  // nextTick(() => {
+  let itemClientHeight = (30 * (val + 1)) - 30
+  scrollBox.value!.scrollTop = itemClientHeight
+  // })
+})
 onMounted(async () => {
   try {
     const res = await getMusicList()
@@ -316,18 +329,34 @@ onMounted(async () => {
   width: 215px;
   height: 50px;
   display: flex;
+  margin: 10px;
 
   .songOption-icon {
     height: 16px;
   }
 
   .Progress {
-    width: 160px;
-    height: 3px;
-    background-color: #f3f2d9;
-    margin-top: 9px;
+    margin-top: -3px;
     border-radius: 3px;
     display: none;
+
+    :deep(.range) {
+      appearance: none;
+      width: 160px;
+      height: 3px;
+      background: #f3f2d9;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    :deep(.range::-webkit-slider-thumb) {
+      appearance: none;
+      width: 3px;
+      height: 3px;
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: calc(-100vh - 2px) 0 0 100vh #4f8984;
+    }
 
     .onProgress {
       width: 1%;
@@ -415,7 +444,7 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   user-select: none;
-  position: relative;
+  //position: relative;
   transition: all .5s;
   background-color: var(--c-f9f9f930);
 
@@ -423,17 +452,22 @@ onMounted(async () => {
     transition: all .5s;
     overflow: auto;
     position: absolute;
-    top: 60px;
+    top: 50px;
     right: 0;
     width: 254px;
-    height: 285px;
-    border-radius: 5px;
-    transform: v-bind(translate);
+    height: v-bind(translate);
+    border-radius: 0 0 5px 5px;
+    //transform: v-bind(translate);
     opacity: v-bind(op);
-    background-color: var(--80background-color);
-    z-index: -2;
+    background-color: var(--c-musiclist-bg);
+    z-index: -1;
+    //padding-top: 1px;
     box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
     backdrop-filter: var(--c-base-blur);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 
     &::-webkit-scrollbar {
       width: 0px;
@@ -449,7 +483,7 @@ onMounted(async () => {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 50px;
+    padding: 20px;
     height: 100%;
   }
 
@@ -504,7 +538,7 @@ onMounted(async () => {
   }
 
   &:hover {
-    background: var(--c-907e7e28) !important;
+    background: var(--c-musiclist-item-bg) !important;
   }
 }
 
@@ -514,11 +548,24 @@ onMounted(async () => {
   border-radius: 50%;
 }
 
-@media screen and (max-width: 1110px) {
-  .music {
-    width: 0;
-    display: none;
+//@media screen and (max-width: 1110px) {
+//  .music .player {
+//    width: 0;
+//    display: none;
+//  }
+//}
+
+@media screen and (max-width: 750px) {
+  .music-posa {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    top: 50px !important;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 100% !important;
+    margin: 0 auto;
   }
 }
-
 </style>

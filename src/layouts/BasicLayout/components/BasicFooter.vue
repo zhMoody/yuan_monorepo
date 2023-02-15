@@ -19,12 +19,13 @@ export default {
   name: 'BaseFooter',
 };
 </script>
-<style scoped lang="less">
+<style lang="less" scoped>
 footer {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 80px;
+  background: var(--c-f9f9f930) !important;
 }
 
 /*底部页脚*/
@@ -48,7 +49,7 @@ footer {
 }
 
 a {
-  color: #fff;
+  color: var(--c-text-666);
 }
 
 .github-badge .badge-value {

@@ -21,11 +21,15 @@ install
 - store localstorage本地存储
 - axios 请求
 - vue3-lazy 图片懒加载
-- package.json
+
 - @vicons/ionicons5 icon图标
 - md-editor-v3 md文档编辑器
 
+
+- package.json
+
 ```json
+
 {
   "name": "vue3tstemplate",
   "private": true,

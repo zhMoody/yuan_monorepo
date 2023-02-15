@@ -25,45 +25,59 @@ li {
 }
 
 :root {
+  --c-blockquote: #eaeaea;
   --c-text-primary: #191919;
   --c-text-secondary: #737374;
   --c-text-666: #777;
   --c-text-777: #777;
-  --c-f9f9f930: #F9F9F930;
+  --c-f9f9f930: #F9F9F9;
   --c-border-primary: #ccc;
-  --c-bg-body: #f9f9f9;
+  --c-bg-body: #f9f9f9 url("@/assets/ow.jpg") no-repeat top center fixed;
   --c-bg-primary: #fff;
   --c-bg-secondary: #d4d8dd;
   --background-color: #f9f9f9;
   --80background-color: rgba(249, 249, 249, 0.8);
-  --c-bg-button: #fff;
+  --c-bg-bodyFFF: #fff;
   --c-base-blur: blur(50px);
-  --c-divider: #f3f1f1;
+  --c-divider: rgba(237, 241, 242, 0.6);
   --c-907e7e30: #907e7e30;
-  --c-907e7e28: #907E7E28;
   --c-7F780AFF: #7F780AFF;
   --c-f1f3f4: #f1f3f4;
-}
-
-:root.dark-theme {
-  --c-text-primary: #eee;
-  --c-text-secondary: #d3d5db;
-  --c-border-primary: #454545;
-  --c-bg-body: #5e5e5e;
-  --c-bg-primary: #323339;
-  --c-bg-secondary: #222128;
-  --c-bg-button: #494a50;
-
+  --c-header-boxShow: rgba(0, 0, 0, 0.05);
+  --c-doclistBg: #fdfdfd;
+  --c-doclistBg-item-hover: #efefef;
+  --c-content-bg: #f9f9f9;
+  --c-musiclist-bg: #fff;
+  --c-musiclist-item-bg: #e9e9e9;
 }
 
 :root.black-theme {
+  --c-divider: #252525;
+  --c-musiclist-bg: #191919;
+  --c-musiclist-item-bg: #252525;;
+  --c-content-bg: #191919;
+  --c-doclistBg: #1c1c1c;
+  --c-doclistBg-item-hover: #0d0d0d;
+  --c-blockquote: #1e1e1e;
   --c-text-primary: #edeeef;
-  --c-text-secondary: #d4d7e1;
+  --c-text-secondary: #888;
   --c-border-primary: #323232;
-  --c-bg-body: #000;
+  --c-bg-body: #191919;
   --c-bg-primary: #1b1d23;
   --c-bg-secondary: #000001;
   --c-bg-button: #343844;
+  --c-text-666: #777777;
+  --c-f1f3f4: #191919;
+  --c-text-777: #888;
+  --c-f9f9f930: #212121;
+  --background-color: #f9f9f9;
+  --80background-color: rgba(249, 249, 249, 0.8);
+  --c-bg-bodyFFF: #212121;
+  --c-base-blur: blur(50px);
+  --c-907e7e30: #907e7e30;
+  --c-907e7e28: #907E7E28;
+  --c-7F780AFF: #7F780AFF;
+  --c-header-boxShow: rgba(255, 255, 255, 0.1);
 }
 
 body {
@@ -86,7 +100,7 @@ body::after {
   left: 0;
   width: 100%;
   height: 100%;
-  //background: url("@/assets/ow.jpg") var(--c-bg-body) no-repeat top center fixed;
+  background: var(--c-bg-body);
   z-index: -1;
 }
 
@@ -117,7 +131,7 @@ body::-webkit-scrollbar-thumb {
   width: 1em;
   height: 1em;
   vertical-align: -0.15em;
-  fill: currentColor;
+  fill: var(--c-text-666);
   overflow: hidden;
 }
 

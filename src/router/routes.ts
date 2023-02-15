@@ -12,7 +12,7 @@ export const frameIn: Array<RouteRecordRaw> = [
         name: 'home',
         component: () => import('@/views/home/index.vue'),
         meta: {
-          title: 'Home',
+          title: '首页',
           keepAlive: false,
           transition: 'animate__fadeIn'
         },
@@ -26,7 +26,7 @@ export const frameIn: Array<RouteRecordRaw> = [
         component: () =>
           import(/* webpackChunkName: "article" */ "@/components/article/index.vue"),
         meta: {
-          title: '--Moody--',
+          title: '正文',
           keepAlive: false,
           transition: 'animate__fadeIn'
         },
@@ -36,7 +36,7 @@ export const frameIn: Array<RouteRecordRaw> = [
         name: 'acg',
         component: () => import('@/views/Acg/index.vue'),
         meta: {
-          title: 'acg',
+          title: 'test',
           keepAlive: false,
           transition: 'animate__fadeIn'
         },

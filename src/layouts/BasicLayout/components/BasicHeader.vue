@@ -1,10 +1,15 @@
 <template>
-  <header class="header">
-    <div class="blog-left">
+  <header id="header" class="header">
+    <div class="default" @click="router.push('/')">
       <Icon size='22'>
         <HomeOutline tag="span"/>
       </Icon>
-      <span style="padding-left: 10px">  {{ store.userInfo.userName }} {{ screenWidth }}</span>
+      <span style="padding-left: 10px;color: var(--c-text-666)">  {{ store.userInfo.userName }}</span>
+    </div>
+    <div class="onMobile" @click="showMenu">
+      <Icon size='22'>
+        <HomeOutline tag="span"/>
+      </Icon>
     </div>
     <div class="blog-center">
       <div class="blog-center-search">
@@ -19,15 +24,15 @@
       </div>
     </div>
     <div class="blog-right">
-      <MusicPlayer></MusicPlayer>
+      <MusicPlayer class="musicBox"></MusicPlayer>
       <div class="login-container" @click.self="showBox">
-        <Icon v-if="!store.userInfo.token" color="#666" size="24" @click="showBox">
+        <Icon v-if="!store.userInfo.token" color="#777" size="24" @click="showBox">
           <PersonCircleOutline></PersonCircleOutline>
         </Icon>
-        <span style="margin-right: 5px;font-size: 16px;color: #666" @click="showBox">{{
+        <span style="margin-right: 5px;font-size: 16px;color: var(--c-text-666)" @click="showBox">{{
             store.userInfo.nickname
           }}</span>
-        <Icon color="#666" size="12" @click="showBox">
+        <Icon color="#777" size="12" @click="showBox">
           <CaretDown tag="span"></CaretDown>
         </Icon>
         <div class="avatar">
@@ -49,7 +54,7 @@
             :model="formValue"
             :rules="rules"
           >
-            <n-form-item label="用户名" path="user.nickname">
+            <n-form-item class="ipt" label="用户名" path="user.nickname">
               <n-input v-model:value="formValue.nickname" placeholder="用户名"/>
             </n-form-item>
             <n-form-item label="密码" path="user.password" style="margin-bottom: 10px">
@@ -71,25 +76,15 @@
         </div>
       </div>
     </div>
+
   </header>
-  <header class="mobile-header">
-    <div class="btn" @click="showMenu">
-      <Icon color="#666" size='16'>
-        <MenuSharp tag="span"></MenuSharp>
-      </Icon>
-    </div>
-    <span class="title">{{ store.userInfo.userName }}  {{ show.isShowMenu.menwWidth }}</span>
-    <div class="btn">
-      <Icon color="#666" size='16'>
-        <Search tag="span"></Search>
-      </Icon>
-    </div>
-  </header>
+
 </template>
 <script lang='ts' setup>
 import {computed, onMounted, ref, watch, watchEffect} from "vue";
 import {NInput, FormInst, useMessage, NForm, NFormItem, NButton, NAvatar, NDivider, useNotification} from 'naive-ui'
 import MusicPlayer from '@/components/musicPlay/index.vue'
+import {useRouter} from "vue-router";
 import {HomeOutline, Search, PersonCircleOutline, CaretDown, MenuSharp} from '@vicons/ionicons5'
 import useUserStore from "@/stores/useUser";
 import useMenu from "@/stores/useMenu";
@@ -99,12 +94,13 @@ import WOW from "wow.js";
 const store = useUserStore()
 const notification = useNotification()
 const show = useMenu()
+const router = useRouter()
 const formRef = ref<FormInst | null>(null)
 const message = useMessage()
 const isShowLoginInputBox = ref<boolean>(false)
 const screenWidth = ref<any>(window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth)
 const formValue = ref<{ nickname: string, password: string }>({
-  nickname: 'admin',
+  nickname: 'Moody',
   password: 'Aa2597758'
 })
 
@@ -132,18 +128,22 @@ const handleValidateClick = () => {
     store.login(formValue.value)
   }
 }
-const translate = ref('translateY(-300px)')
+const onHeight = ref('0')
 const op = ref(0)
+const onPadding = ref('0')
 const showBox = () => {
   isShowLoginInputBox.value = !isShowLoginInputBox.value
   if (isShowLoginInputBox.value) {
-    translate.value = 'translateY(0)'
+    onHeight.value = '220px'
     op.value = 1
+    onPadding.value = '15px'
   } else {
-    translate.value = 'translateY(-300px)'
+    onHeight.value = '0'
     op.value = 0
+    onPadding.value = '0'
   }
 }
+
 const showMenu = () => {
   show.isShow(!show.isShowMenu.ShowMenu)
 }
@@ -163,12 +163,13 @@ const getDate = () => {
   }
 }
 
-const setShowLoginBox = () => {
-  console.log(111)
-  isShowLoginInputBox.value = false
-  translate.value = 'translateY(-300px)'
-  op.value = 0
-}
+// const setShowLoginBox = () => {
+//   console.log(111)
+//   isShowLoginInputBox.value = false
+//   translate.value = 'translateY(-300px)'
+//   op.value = 0
+// }
+
 onMounted(async () => {
   window.onresize = () => {
     return (() => {
@@ -203,7 +204,7 @@ onMounted(async () => {
   width: 100%;
   height: 50px;
   background-color: var(--c-f9f9f930);
-  box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+  box-shadow: var(--c-header-boxShow) 0px 1px 2px 0px;
   position: sticky;
   top: 0;
   z-index: 990;
@@ -211,9 +212,8 @@ onMounted(async () => {
   display: flex;
   justify-content: space-between;
   padding: 0;
-  border-radius: 5px;
 
-  .blog-left {
+  .default {
     //background-color: #000000;
     display: inline-block;
     height: 40px;
@@ -231,7 +231,18 @@ onMounted(async () => {
       transition: all .3s;
       color: var(--c-text-666);
     }
+  }
 
+  .onMobile {
+    display: none;
+    height: 40px;
+    margin-top: 10px;
+    line-height: 40px;
+    border-radius: 50px;
+    padding: 0 20px;
+    user-select: none;
+    transition: all .3s;
+    cursor: url('../../../assets/link.cur'), pointer;
   }
 
   .blog-center {
@@ -283,7 +294,6 @@ onMounted(async () => {
       border: 1px solid transparent;
 
       &:hover {
-        background-color: #e0e6ed;
         border-radius: 0 50px 50px 0;
         box-shadow: #cad6f2 0px 3px 3px 0px;
         border: 1px solid #cad6f2;
@@ -302,7 +312,6 @@ onMounted(async () => {
       align-items: center;
       padding: 0 15px;
       user-select: none;
-      position: relative;
 
       .avatar {
         margin-left: 5px;
@@ -331,18 +340,23 @@ onMounted(async () => {
 
       .login-posa {
         position: absolute;
-        top: 60px;
+        top: 50px;
         right: 0;
         width: 280px;
-        height: 210px;
-        padding: 15px;
+        height: v-bind(onHeight);
+        padding: v-bind(onPadding);
         transition: all .5s;
-        transform: v-bind(translate);
         opacity: v-bind(op);
-        background-color: var(--80background-color);
-        z-index: -1;
+        //transform: v-bind(translate);
+        background: var(--c-musiclist-bg);
+        z-index: 1;
         box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
         border-radius: 5px;
+        overflow: hidden;
+
+        .ipt {
+          color: var(--c-text-666);;
+        }
       }
 
       .isLoginBox {
@@ -385,55 +399,50 @@ onMounted(async () => {
     }
 
   }
-
 }
 
-.mobile-header {
-  width: 100%;
-  height: 50px;
-  background-color: var(--c-f9f9f930);
-  box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
-  position: sticky;
-  top: 0;
-  z-index: 990;
-  backdrop-filter: var(--c-base-blur);
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-  border-radius: 5px;
-  display: none;
-
-  .title {
-    flex: 1;
-    font-size: 24px;
-    text-align: center;
-    transition: all .3s;
-    color: var(--c-text-666);
-    cursor: url('../../../assets/link.cur'), pointer;
-    user-select: none;
-  }
-
-  .btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 50px;
-    height: 100%;
-    padding: 0 10px;
-    line-height: 36px;
-    border: 1px solid transparent;
-    background-color: transparent;
-    cursor: url(/src/assets/link.cur), pointer;
-  }
-}
 
 @media screen and  (max-width: 750px) {
-  body .header {
-    display: none;
+  .header {
+    width: 100%;
+    height: 50px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+    position: sticky;
+    top: 0;
+    z-index: 990;
+    backdrop-filter: var(--c-base-blur);
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+
+    .blog-center {
+      display: none;
+    }
+
+    .login-posa {
+      width: 100% !important;
+      right: 50% !important;
+      transform: translate(50%, 0);
+    }
   }
 
-  body .mobile-header {
-    display: flex;
+  .default {
+    display: none !important;
+  }
+
+  .onMobile {
+    display: inline-block !important;
+  }
+
+  .SearchBox {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    height: v-bind(onHeight);
+    opacity: v-bind(op);
+    background: #ffa500;
+    transition: all .5s;
   }
 }
 </style>

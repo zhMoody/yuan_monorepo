@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --mode development",
     "build": "vite build --mode production",
-    "preview": "vite preview --port 3222"
+    "preview": "vite preview --port 3222",
+    "build:prod": "docker build -f dist/Dockerfile  -t yuan ."
   },
   "dependencies": {
     "animate.css": "^4.1.1",
