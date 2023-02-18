@@ -2,7 +2,7 @@
   <div class="loading">
     <div class="left"></div>
     <div class="right"></div>
-    <div v-show="loadingStore.onLoading" class="loadingText">正在加载中，请稍后。</div>
+    <div v-show="loadingStore.onLoading" class="loadingText">{{ loadingStore.loadingText }}</div>
     <div v-show="loadingStore.onLoading" class="second-wrapper">
       <div class="circle-loader">
         <div class="circle circle_four"></div>

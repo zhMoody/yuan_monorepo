@@ -14,14 +14,17 @@ const defaultData = {
   tootal: 0
 };
 
-export default defineStore('useFenye', () => {
+export default defineStore('usePaging', () => {
   // @ts-ignore
   const fenye = ref<T>(defaultData)
 
   const setFenye = (payload) => {
     fenye.value = payload
   }
-  return {fenye, setFenye}
+  const setTootal = (payload) => {
+    fenye.value.tootal = payload
+  }
+  return {fenye, setFenye, setTootal}
 }, {
   persist: true
 })

@@ -89,7 +89,7 @@ const articleStore = useArticle()
 const route = useRoute()
 const router = useRouter()
 const articleData = reactive<any>({detail: {}})
-const titleList = ref('')
+const titleList = ref<string>('')
 const content = ref<string>('')
 
 const formatTime = computed((item) => () => {
@@ -108,7 +108,6 @@ const markedHeadingId = (_text, _level, index) => {
   return `yuan-${_level}-${index}`
 };
 watch(() => titleList.value, (val) => {
-  // console.log(markedRenderer())
   articleStore.setTitleList(val)
 }, {deep: true})
 onMounted(async () => {

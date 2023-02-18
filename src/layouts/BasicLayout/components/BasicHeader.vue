@@ -65,7 +65,7 @@
           </n-form>
           <div v-if="store.userInfo.token" class="isLoginBox" @click.self="logoutBlog">
             <div class="helloTitle">{{ getDate() }}</div>
-            <div class="LoginOptions">
+            <div class="LoginOptions" @click="handleRouter('addArticle')">
               <div class="onNew">
                 <Icon color="var(--c-text-666)" size="14">
                   <ColorWandOutline></ColorWandOutline>
@@ -75,7 +75,7 @@
                 <CaretForward tag="span"></CaretForward>
               </Icon>
             </div>
-            <div class="LoginOptions">
+            <div class="LoginOptions" @click="handleRouter('backStageManagement')">
               <div class="onNew">
                 <Icon color="var(--c-text-666)" size="14">
                   <SettingsOutline tag="span"></SettingsOutline>
@@ -93,7 +93,6 @@
         </div>
       </div>
     </div>
-
   </header>
 
 </template>
@@ -115,6 +114,8 @@ import useUserStore from "@/stores/useUser";
 import useMenu from "@/stores/useMenu";
 import {Icon} from '@vicons/utils'
 import WOW from "wow.js";
+import {auth} from "@/api";
+
 
 const store = useUserStore()
 const notification = useNotification()
@@ -184,6 +185,20 @@ const getDate = () => {
     return '下午好呀～'
   } else {
     return '晚上好呀～'
+  }
+}
+//跳转到后台管理页面
+
+const handleRouter = (path) => {
+  if (store.userInfo.token && store.userInfo.id) {
+    const {href} = router.resolve({
+      name: "auth",
+      query: {
+        id: store.userInfo.id,
+        path: path
+      }
+    })
+    window.open(href, '_blank');
   }
 }
 

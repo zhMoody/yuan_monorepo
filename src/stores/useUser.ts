@@ -43,9 +43,9 @@ export default defineStore('useUserStore', () => {
         duration: 2000
       })
     })
-    storage.set('ACCESS_TOKEN', res.data.token)
+    userInfo.value.token = res.data.token
     const userinfo = await getUserInfo()
-    userInfo.value = {...userInfo.value, id: userinfo.data._id, token: res.data.token, ...userinfo.data}
+    userInfo.value = {...userInfo.value, id: userinfo.data._id, ...userinfo.data}
     delete userInfo.value._id
   }
 

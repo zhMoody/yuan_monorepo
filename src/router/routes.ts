@@ -58,6 +58,53 @@ export const frameIn: Array<RouteRecordRaw> = [
 // 主框架外显示的路由
 const frameOut = [
   {
+    path: '/auth',
+    name: 'auth',
+    component: () => import('@/views/auth/index.vue'),
+    meta: {
+      title: '登录验证',
+      transition: 'animate__fadeIn'
+    },
+  },
+  {
+    path: '/backStageManagement',
+    name: 'backStageManagement',
+    component: () => import('@/views/sys/backStageManagement/index.vue'),
+    meta: {
+      title: '后台管理',
+      transition: 'animate__fadeIn'
+    },
+    children: [
+      {
+        path: '/backStageManagement',
+        name: 'monitor',
+        component: () => import('@/views/sys/backStageManagement/components/monitor/monitor.vue'),
+        meta: {
+          title: '撰写新文章',
+          transition: 'animate__fadeIn'
+        },
+      },
+      {
+        path: '/addArticle',
+        name: 'addArticle',
+        component: () => import('@/views/sys/backStageManagement/components/addArticle/addArticle.vue'),
+        meta: {
+          title: '撰写文章',
+          transition: 'animate__fadeIn'
+        },
+      },
+      {
+        path: '/articleManagement',
+        name: 'articleManagement',
+        component: () => import('@/views/sys/backStageManagement/components/articleManagement/articleManagement.vue'),
+        meta: {
+          title: '文章管理',
+          transition: 'animate__fadeIn'
+        },
+      }
+    ]
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import('@/views/sys/login/index.vue'),

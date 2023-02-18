@@ -42,7 +42,7 @@
                   <BulbOutline></BulbOutline>
                 </Icon>
                 <span>文章总数</span></div>
-              <span class="blogInfo-content-right-text">{{ fenyeStore.fenye.tootal }}</span>
+              <span class="blogInfo-content-right-text">{{ pagingStore.fenye.tootal }}</span>
             </li>
             <li>
               <div class="blogInfo-content-left-text">
@@ -96,9 +96,9 @@ import {NDivider} from 'naive-ui'
 import {onMounted, reactive, ref, watchEffect} from 'vue'
 import useArticle from "@/stores/useArticle";
 import {useRoute} from "vue-router";
-import useFenye from "@/stores/useFenye";
+import usePaging from "@/stores/usePaging";
 
-const fenyeStore = useFenye()
+const pagingStore = usePaging()
 const route = useRoute()
 const articleStore = useArticle()
 const RightTitle = ref('热门文章')

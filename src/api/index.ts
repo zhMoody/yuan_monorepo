@@ -12,4 +12,10 @@ export const getUserInfo = () => request<any>({
   url: '/admin/user/info',
 });
 
+export const auth = (data) => request<any>({
+  url: "admin/auth",
+  method: 'POST',
+  data
+})
+
 export const Logout = () => request<any>({method: 'get', url: '/api/logout'});

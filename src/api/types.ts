@@ -99,5 +99,45 @@ declare module MusicTypes {
 
 }
 
+declare module DeleteArticle {
+
+  export interface RootObject {
+    msg: string;
+    errorCode: number;
+    code: number;
+    data: string;
+  }
+
+}
+
+
+declare module CategroyData {
+
+  export interface ErrRootObject {
+    errorMessage: string;
+    error_code: number;
+    request: string;
+  }
+
+  export interface Result {
+    _id: string;
+    name: string;
+    keyword: string;
+  }
+
+  export interface Data {
+    result: Result[];
+    tootal: number;
+  }
+
+  export interface RootObject {
+    msg: string;
+    errorCode: number;
+    code: number;
+    data: Data;
+  }
+
+}
+
 
 

@@ -52,8 +52,8 @@
         </div>
       </div>
       <div v-if="showPagination" class="pages">
-        <n-pagination v-model:page="fenyeStore.fenye.pagenum" v-model:page-size="fenyeStore.fenye.pagesize"
-                      :page-count="Math.ceil(tootal/pages)"
+        <n-pagination v-model:page="pagingStore.fenye.pagenum" v-model:page-size="pagingStore.fenye.pagesize"
+                      :page-count="Math.ceil(paging.tootal/paging.pagesize)"
                       :prev="nextPage"/>
       </div>
     </div>
@@ -65,7 +65,7 @@ import {NPagination, PaginationInfo, NEmpty, NDivider, NAvatar} from 'naive-ui'
 import {PersonOutline, TimeOutline, EyeOutline} from '@vicons/ionicons5'
 import {Icon} from "@vicons/utils/lib";
 import {onMounted, reactive, ref, computed, watch} from 'vue';
-import useFenye from "@/stores/useFenye";
+import usePaging from "@/stores/usePaging";
 import useUser from "@/stores/useUser";
 import WOW from "wow.js";
 import {getArticleList} from "@/api/article";
@@ -75,53 +75,52 @@ import {useRouter} from "vue-router";
 type Data = {
   pagesize: number
   pagenum: number
+  tootal: number
 }
 const userStore = useUser()
-const fenyeStore = useFenye()
+const pagingStore = usePaging()
 const router = useRouter()
 const articleList = reactive<any>({list: []})
-const pages = ref<number>(6)
-const pagen = ref<number>(1)
-const tootal = ref<number>(0)
+const paging = reactive<Data>({
+  pagesize: 6,
+  pagenum: 1,
+  tootal: 0
+})
 const showPagination = ref(false)
-const nextPage = (info: PaginationInfo) => {
+const nextPage = async (info: PaginationInfo) => {
   console.log(info)
   let data = {
     pagesize: info.pageSize,
     pagenum: info.page,
-    tootal: info.itemCount
   }
-  fenyeStore.setFenye(data)
+  pagingStore.setFenye(data)
+  await getList()
 }
+
+const getList = async () => {
+  try {
+    const res = await getArticleList(paging)
+    paging.pagesize = +res.data.pagesize
+    paging.pagenum = +res.data.pagenum
+    paging.tootal = +res.data.tootal
+    pagingStore.setTootal(paging.tootal)
+    articleList.list = res.data.result
+    if (articleList.list.length) showPagination.value = true
+    document.documentElement.scrollTop = 0
+  } catch (err) {
+    showPagination.value = false
+  }
+}
+
 const gotoDetail = (id) => {
   router.push(`/article/${id}`)
 }
 const formatTime = computed((item) => () => {
   return dayjs(item).format('YYYY-MM-DD')
 })
-watch(() => fenyeStore.fenye, (val) => {
-  getList(val)
-}, {deep: true})
-const getList = async (data: Data) => {
-  try {
-    const res = await getArticleList(data)
-    tootal.value = +res.data.tootal
-    pagen.value = +res.data.pagenum
-    pages.value = +res.data.pagesize
-    articleList.list = res.data.result
-    if (articleList.list.length) showPagination.value = true
-    document.documentElement.scrollTop = 0
-  } catch (err) {
-    console.log(err)
-    showPagination.value = false
-  }
-}
-onMounted(async () => {
-  let data = {
-    pagenum: pagen.value,
-    pagesize: pages.value
-  }
-  await getList(data)
+onMounted(() => {
+  getList()
+
   let wow = new WOW({
     boxClass: "wow",
     animateClass: "animated",
