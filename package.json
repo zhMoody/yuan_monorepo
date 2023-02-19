@@ -7,10 +7,9 @@
     "dev": "vite --mode development",
     "build": "vite build --mode production",
     "preview": "vite preview --port 3222",
-    "build:prod": "pnpm run build && docker build  --platform linux/amd64 -f ./Docker/Dockerfile  -t code3006/yuan ."
+    "build:prod": "pnpm run build && docker build  --platform linux/amd64 -f ./Docker/Dockerfile  -t code3006/yuan:0.2.1 ."
   },
   "dependencies": {
-    "@tomiaa/live2d": "^0.0.1",
     "animate.css": "^4.1.1",
     "axios": "0.21.1",
     "current-device": "0.10.2",

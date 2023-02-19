@@ -15,7 +15,7 @@
            data-wow-iteration="1" data-wow-offset="1" @click="gotoDetail(item._id)">
         <div class="card">
           <div class="card-img">
-            <img v-lazy="item.imgUrl"/>
+            <img v-lazy="item.cover"/>
           </div>
           <div class="titleInfo">
             <div class="title">{{ item.title }}</div>
@@ -52,7 +52,7 @@
         </div>
       </div>
       <div v-if="showPagination" class="pages">
-        <n-pagination v-model:page="pagingStore.fenye.pagenum" v-model:page-size="pagingStore.fenye.pagesize"
+        <n-pagination v-model:page="paging.pagenum" v-model:page-size="paging.pagesize"
                       :page-count="Math.ceil(paging.tootal/paging.pagesize)"
                       :prev="nextPage"/>
       </div>
@@ -88,15 +88,17 @@ const paging = reactive<Data>({
 })
 const showPagination = ref(false)
 const nextPage = async (info: PaginationInfo) => {
-  console.log(info)
   let data = {
     pagesize: info.pageSize,
     pagenum: info.page,
   }
-  pagingStore.setFenye(data)
-  await getList()
+  console.log(13, info)
+  paging.pagesize = info.pageSize
+  paging.pagenum = info.page
 }
-
+watch(() => paging.pagenum, () => {
+  getList(paging)
+})
 const getList = async () => {
   try {
     const res = await getArticleList(paging)

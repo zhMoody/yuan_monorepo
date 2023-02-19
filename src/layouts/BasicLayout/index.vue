@@ -50,7 +50,6 @@
           </div>
         </div>
       </div>
-      <div ref="live2dContentRef"></div>
     </div>
   </div>
 </template>
@@ -73,7 +72,6 @@ const BasicHeader = defineAsyncComponent(() => import('./components/BasicHeader.
 const BasicMenu = defineAsyncComponent(() => import('./components/BasicMenu.vue'));
 const BasicRightNav = defineAsyncComponent(() => import('./components/basicRightNav.vue'));
 const BasicFooter = defineAsyncComponent(() => import('./components/BasicFooter.vue'));
-const live2dContentRef = ref()
 const menuStore = useMenu()
 watchEffect(() => {
   if (menuStore.isShowMenu.menwWidth! >= 750) {
@@ -117,16 +115,6 @@ const onReload = () => {
 }
 
 onMounted(() => {
-  new Live2d({
-    el: live2dContentRef.value,
-    showLoading: false,
-    // jsBaseURL: 'https://gitee.com/zhMoody/live2d/tree/master/public',
-    // live2d_2_ModelBaseURL: 'https://gitee.com/zhMoody/live2d/tree/master/public',
-    // live2d_3_ModelBaseURL: 'https://gitee.com/zhMoody/live2d/tree/master/public',
-    // maxWidth: 200,
-    hitokoto: false,
-    showControl: false
-  } as Live2dOptions)
   document.documentElement.addEventListener('click', () => {
     showSetting.value = false
     onWidth.value = '0'
