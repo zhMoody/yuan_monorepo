@@ -12,6 +12,7 @@ const defaultData = {
 };
 export default defineStore('useShowMenu', () => {
   const isShowMenu = ref<T>(defaultData)
+
   const isShow = (payload) => {
     isShowMenu.value.ShowMenu = payload
   }

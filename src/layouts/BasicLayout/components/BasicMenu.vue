@@ -38,7 +38,7 @@
             v-for="(item, index) in navItemList"
             :key="item.name"
             class="oneMenu"
-            @click="showSubItem(item, index)"
+            @click.stop="showSubItem(item, index)"
           >
             <div :class="item.isSubShow ? 'active' : 'myactive'">
               <svg aria-hidden="true" class="icon">

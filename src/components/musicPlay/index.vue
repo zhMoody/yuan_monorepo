@@ -1,8 +1,8 @@
 <template>
   <div class="music">
     <div class="music-option">
-      <div class="btn" @click.self="showBox">
-        <Icon color="#777" size="24" @click="showBox">
+      <div class="btn" @click.stop="showBox">
+        <Icon color="#777" size="24" @click.stop="showBox">
           <BowlingBallOutline tag="span"></BowlingBallOutline>
         </Icon>
       </div>
@@ -20,14 +20,14 @@
             <div class="songName">{{ options.musicTitle || '没有可播放的歌曲' }}</div>
             <div class="songOption">
               <div class="songOption-icon">
-           <span @click="musicPlay('pre')">
+           <span @click.stop="musicPlay('pre')">
               <SvgIcon color="var(--c-text-666)" name="rewind"></SvgIcon>
            </span>
-                <span @click="musicPlay('play')">
+                <span @click.stop="musicPlay('play')">
               <SvgIcon :name=" options.play ? 'pause' : 'play'" color="var(--c-text-666)"></SvgIcon>
             </span>
 
-                <span @click="musicPlay('next')">
+                <span @click.stop="musicPlay('next')">
               <SvgIcon color="var(--c-text-666)" name="fast-forward"></SvgIcon>
             </span>
                 <span style="color: var(--c-text-666);user-select: none">{{ options.currentTime || '00:00' }}</span>
@@ -52,7 +52,7 @@
                       background:options.index + 1 === item.id ? 'var(--c-musiclist-item-bg)' : 'var(--c-musiclist-bg)',
                       }"
                    class="item"
-                   @click="handlerPlay(item.id)">
+                   @click.stop="handlerPlay(item.id)">
                 <span>
                   {{ item.id }}.  {{ item.name }}
                 </span>
@@ -305,6 +305,7 @@ watch(() => options.index, (val) => {
   scrollBox.value!.scrollTop = itemClientHeight
 })
 onMounted(async () => {
+
   try {
     const res = await getMusicList()
     if (res.data) {
@@ -320,6 +321,11 @@ onMounted(async () => {
       loadingStore.setLoading(false)
     }, 5000)
   }
+  document.documentElement.addEventListener('click', () => {
+    showPosa.value = false
+    translate.value = '0'
+    op.value = 0
+  })
 })
 </script>
 <style lang="less" scoped>

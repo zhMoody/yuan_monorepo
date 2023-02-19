@@ -1,13 +1,13 @@
 <template>
   <header id="header" class="header">
     <div class="default" @click="router.push('/')">
-      <Icon size='22'>
+      <Icon color="var(--c-text-666)" size='24'>
         <HomeOutline tag="span"/>
       </Icon>
       <span style="padding-left: 10px;color: var(--c-text-666)">  {{ store.userInfo.userName }}</span>
     </div>
-    <div class="onMobile" @click="showMenu">
-      <Icon size='22'>
+    <div class="onMobile" @click.stop="showMenu">
+      <Icon color="var(--c-text-666)" size='22'>
         <HomeOutline tag="span"/>
       </Icon>
     </div>
@@ -25,14 +25,14 @@
     </div>
     <div class="blog-right">
       <MusicPlayer class="musicBox"></MusicPlayer>
-      <div class="login-container" @click.self="showBox">
-        <Icon v-if="!store.userInfo.token" color="#777" size="24" @click="showBox">
+      <div class="login-container" @click.stop="showBox">
+        <Icon v-if="!store.userInfo.token" color="#777" size="24" @click.stop="showBox">
           <PersonCircleOutline></PersonCircleOutline>
         </Icon>
-        <span style="margin-right: 5px;font-size: 16px;color: var(--c-text-666)" @click="showBox">{{
+        <span style="margin-right: 5px;font-size: 16px;color: var(--c-text-666)" @click.stop="showBox">{{
             store.userInfo.nickname
           }}</span>
-        <Icon color="var(--c-text-666)" size="12" @click="showBox">
+        <Icon color="var(--c-text-666)" size="12" @click.stop="showBox">
           <CaretDown tag="span"></CaretDown>
         </Icon>
         <div class="avatar">
@@ -43,7 +43,7 @@
             bordered
             fallback-src="https://s1.ax1x.com/2020/07/25/UzAaMq.jpg"
             round
-            @click="showBox"
+            @click.stop="showBox"
           />
           <span v-if="store.userInfo.token" class="spa"></span>
         </div>
@@ -52,20 +52,21 @@
             v-if="!store.userInfo.token"
             ref="formRef"
             :model="formValue"
+            @click.stop
           >
             <n-form-item class="ipt" label="用户名" path="user.nickname">
-              <n-input v-model:value="formValue.nickname" placeholder="用户名"/>
+              <n-input v-model:value="formValue.nickname" placeholder="用户名" @focus.stop/>
             </n-form-item>
             <n-form-item label="密码" path="user.password" style="margin-bottom: 10px">
-              <n-input v-model:value="formValue.password" placeholder="密码"/>
+              <n-input v-model:value="formValue.password" placeholder="密码" @focus.stop/>
             </n-form-item>
-            <n-button block type="info" @click="handleValidateClick">
+            <n-button block type="info" @click.stop="handleValidateClick">
               登录
             </n-button>
           </n-form>
           <div v-if="store.userInfo.token" class="isLoginBox" @click.self="logoutBlog">
             <div class="helloTitle">{{ getDate() }}</div>
-            <div class="LoginOptions" @click="handleRouter('addArticle')">
+            <div class="LoginOptions" @click.stop="handleRouter('addArticle')">
               <div class="onNew">
                 <Icon color="var(--c-text-666)" size="14">
                   <ColorWandOutline></ColorWandOutline>
@@ -75,7 +76,7 @@
                 <CaretForward tag="span"></CaretForward>
               </Icon>
             </div>
-            <div class="LoginOptions" @click="handleRouter('backStageManagement')">
+            <div class="LoginOptions" @click.stop="handleRouter('backStageManagement')">
               <div class="onNew">
                 <Icon color="var(--c-text-666)" size="14">
                   <SettingsOutline tag="span"></SettingsOutline>
@@ -86,7 +87,7 @@
               </Icon>
             </div>
             <n-divider/>
-            <div class="logoutBtn" @click="logoutBlog">
+            <div class="logoutBtn" @click.stop="logoutBlog">
               退出登录
             </div>
           </div>
@@ -210,6 +211,12 @@ const handleRouter = (path) => {
 // }
 
 onMounted(async () => {
+  document.documentElement.addEventListener('click', () => {
+    isShowLoginInputBox.value = false
+    onHeight.value = '0'
+    op.value = 0
+    onPadding.value = '0'
+  })
   window.onresize = () => {
     return (() => {
       show.setMenuWidth(window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth)
@@ -254,7 +261,6 @@ onMounted(async () => {
 
   .default {
     //background-color: #000000;
-    display: inline-block;
     height: 40px;
     margin-top: 10px;
     line-height: 40px;
@@ -263,6 +269,9 @@ onMounted(async () => {
     user-select: none;
     transition: all .3s;
     cursor: url('../../../assets/link.cur'), pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     span {
       font-size: 24px;

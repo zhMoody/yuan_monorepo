@@ -163,8 +163,16 @@ onMounted(async () => {
     background: transparent;
     box-sizing: border-box;
     border-radius: 10px;
-    color: var(--c-text-777);
+    color: #fff !important;
     font-family: 'rz', "yezi", serif;
+
+    :deep(.default-theme a) {
+      color: var(--c-text-777);
+    }
+
+    :deep(.default-theme) {
+      color: var(--c-text-666);
+    }
   }
 
   &:hover .edit {
