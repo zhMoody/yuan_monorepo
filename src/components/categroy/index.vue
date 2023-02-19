@@ -78,13 +78,21 @@ const formatTime = computed((item) => () => {
 })
 console.log()
 watch(() => route.query.id, async (val) => {
-  const res = await getCategroyItem(val)
-  articleList.list = res.data
-  console.log(res)
+  if (val) {
+    const res = await getCategroyItem(val)
+    if (res.code === 200) {
+      articleList.list = res.data
+    }
+  }
 })
 onMounted(async () => {
-  const res = await getCategroyItem(route.query.id)
-  articleList.list = res.data
+  if (route.query.id) {
+    const res = await getCategroyItem(route.query.id)
+    if (res.code === 200) {
+      articleList.list = res.data
+    }
+  }
+
   let wow = new WOW({
     boxClass: "wow",
     animateClass: "animated",
