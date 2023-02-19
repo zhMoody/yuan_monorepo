@@ -305,7 +305,6 @@ watch(() => options.index, (val) => {
   scrollBox.value!.scrollTop = itemClientHeight
 })
 onMounted(async () => {
-
   try {
     const res = await getMusicList()
     if (res.data) {
@@ -321,7 +320,8 @@ onMounted(async () => {
       loadingStore.setLoading(false)
     }, 5000)
   }
-  document.documentElement.addEventListener('click', () => {
+  document.documentElement.addEventListener('click', (e: MouseEvent) => {
+    e.stopPropagation()
     showPosa.value = false
     translate.value = '0'
     op.value = 0

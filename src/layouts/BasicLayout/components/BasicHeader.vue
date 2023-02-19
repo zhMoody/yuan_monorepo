@@ -6,7 +6,7 @@
       </Icon>
       <span style="padding-left: 10px;color: var(--c-text-666)">  {{ store.userInfo.userName }}</span>
     </div>
-    <div class="onMobile" @click.stop="showMenu">
+    <div class="onMobile" @click="showMenu">
       <Icon color="var(--c-text-666)" size='22'>
         <HomeOutline tag="span"/>
       </Icon>
@@ -26,7 +26,7 @@
     <div class="blog-right">
       <MusicPlayer class="musicBox"></MusicPlayer>
       <div class="login-container" @click.stop="showBox">
-        <Icon v-if="!store.userInfo.token" color="#777" size="24" @click.stop="showBox">
+        <Icon v-if="!store.userInfo.token" color="#777" size="24" @click.self="showBox">
           <PersonCircleOutline></PersonCircleOutline>
         </Icon>
         <span style="margin-right: 5px;font-size: 16px;color: var(--c-text-666)" @click.stop="showBox">{{
@@ -43,7 +43,7 @@
             bordered
             fallback-src="https://s1.ax1x.com/2020/07/25/UzAaMq.jpg"
             round
-            @click.stop="showBox"
+            @click="showBox"
           />
           <span v-if="store.userInfo.token" class="spa"></span>
         </div>
@@ -54,13 +54,13 @@
             :model="formValue"
             @click.stop
           >
-            <n-form-item class="ipt" label="用户名" path="user.nickname">
-              <n-input v-model:value="formValue.nickname" placeholder="用户名" @focus.stop/>
+            <n-form-item class="ipt" label="用户名">
+              <n-input v-model:value="formValue.nickname" placeholder="用户名"/>
             </n-form-item>
-            <n-form-item label="密码" path="user.password" style="margin-bottom: 10px">
-              <n-input v-model:value="formValue.password" placeholder="密码" @focus.stop/>
+            <n-form-item label="密码" style="margin-bottom: 10px">
+              <n-input v-model:value="formValue.password" placeholder="密码"/>
             </n-form-item>
-            <n-button block type="info" @click.stop="handleValidateClick">
+            <n-button block type="info" @click="handleValidateClick">
               登录
             </n-button>
           </n-form>
@@ -210,8 +210,9 @@ const handleRouter = (path) => {
 //   op.value = 0
 // }
 
-onMounted(async () => {
-  document.documentElement.addEventListener('click', () => {
+onMounted(() => {
+  document.documentElement.addEventListener('click', (e: MouseEvent) => {
+    e.stopPropagation()
     isShowLoginInputBox.value = false
     onHeight.value = '0'
     op.value = 0
