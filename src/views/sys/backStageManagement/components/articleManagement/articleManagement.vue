@@ -8,7 +8,6 @@
       :pagination='pagination'
       :single-line="false"
     />
-    一切都将一去杳然，任何人都无法将其捕获。
   </div>
 </template>
 <script lang='ts' setup>
@@ -25,7 +24,7 @@ const isLoading = ref(false)
 const createData = async () => {
   let data = {
     pagenum: 1,
-    pagesize: 10
+    pagesize: 1000
   }
   isLoading.value = true
   let res = await getArticleList(data)
@@ -61,7 +60,7 @@ const columns = createColumns({
   }
 )
 const pagination = ref({
-  pageSize: 100,
+  pageSize: 1000,
   pageNum: 1,
   pageCount: 0
 })

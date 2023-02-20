@@ -8,9 +8,6 @@
       :loading="isLoading"
       :single-line="false"
     />
-    <div>
-      一切都将一去杳然，任何人都无法将其捕获。
-    </div>
     <n-modal
       v-model:show="showModalRef"
       :mask-closable="false"

@@ -80,7 +80,7 @@ const frameOut = [
         name: 'monitor',
         component: () => import('@/views/sys/backStageManagement/components/monitor/monitor.vue'),
         meta: {
-          title: '撰写新文章',
+          title: '仪表盘',
           transition: 'animate__fadeIn'
         },
       },

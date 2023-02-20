@@ -2,40 +2,55 @@
   <div class="">
     <n-form
       ref="formRef"
-      :label-width="80"
       :model="formValue"
       :rules="rules"
+      :show-label="false"
+      label-placement="left"
     >
-      <n-form-item label="文章标题" path="title">
-        <n-input v-model:value="formValue.title" placeholder="文章标题"/>
-      </n-form-item>
-      <n-form-item label="文章简介" path="description">
-        <n-input v-model:value="formValue.description" placeholder="文章简介" type="textarea"/>
-      </n-form-item>
-
-      <n-form-item path="content">
-        <md-editor
-          v-model="formValue.content"
-          class="hText"
-          prettier
-          themes
-        ></md-editor>
-      </n-form-item>
-      <n-form-item label="关键字" path="keyword">
-        <n-input v-model:value="formValue.keyword" placeholder="文章搜索关键字"/>
-      </n-form-item>
-      <n-form-item label="文章封面url" path="cover">
-        <n-input v-model:value="formValue.cover" placeholder="文章封面url"/>
-      </n-form-item>
-      <n-form-item label="文章分类" path="category_id">
-        <n-select v-model:value="formValue.category_id" :on-focus="selectQingqiu" :options="selectOptions"
-                  placeholder="请选择分类"/>
-      </n-form-item>
-      <n-form-item>
-        <n-button attr-type="button" @click="handleValidateClick">
-          {{ route.query.id ? '更新文章' : '创建文章' }}
-        </n-button>
-      </n-form-item>
+      <n-grid :cols="2" class="info" x-gap="12">
+        <n-gi>
+          <n-form-item label="文章标题" path="title">
+            <n-input v-model:value="formValue.title" placeholder="文章标题"/>
+          </n-form-item>
+        </n-gi>
+        <n-gi>
+          <n-form-item label="文章分类" path="category_id">
+            <n-select v-model:value="formValue.category_id" :on-focus="selectQingqiu" :options="selectOptions"
+                      placeholder="文章分类"
+            />
+          </n-form-item>
+        </n-gi>
+        <n-gi>
+          <n-form-item label="关键字" path="keyword">
+            <n-input v-model:value="formValue.keyword" placeholder="文章搜索关键字"/>
+          </n-form-item>
+        </n-gi>
+        <n-gi>
+          <n-form-item label="文章封面url" path="cover">
+            <n-input v-model:value="formValue.cover" placeholder="文章封面url"/>
+          </n-form-item>
+        </n-gi>
+        <n-gi :span="2">
+          <n-form-item label="文章简介" path="description">
+            <n-input v-model:value="formValue.description" placeholder="文章简介" type="textarea"/>
+          </n-form-item>
+        </n-gi>
+      </n-grid>
+      <div class="form-item">
+        <n-form-item path="content">
+          <md-editor
+            v-model="formValue.content"
+            class="hText"
+            prettier
+            themes
+          ></md-editor>
+        </n-form-item>
+        <n-form-item>
+          <n-button attr-type="button" type="success" @click="handleValidateClick">
+            {{ route.query.id ? '更新文章' : '创建文章' }}
+          </n-button>
+        </n-form-item>
+      </div>
     </n-form>
 
 
@@ -44,7 +59,7 @@
 <script lang='ts' setup>
 import MdEditor from 'md-editor-v3';
 import {onMounted, ref} from "vue";
-import {NForm, NInput, NFormItem, NButton, NSelect, useMessage} from "naive-ui/lib";
+import {NForm, NInput, NFormItem, NButton, NSelect, NGrid, NGi, useMessage} from "naive-ui/lib";
 import {addArticle, getCategroy, updateArticle} from "@/api/article";
 import useUser from "@/stores/useUser";
 import {useRoute} from "vue-router";
@@ -58,7 +73,6 @@ const selectOptions = ref<{ label: string, value: string }[]>([])
 const formRef = ref()
 const selectQingqiu = async () => {
   const res = await getCategroy()
-  // @ts-ignore
   selectOptions.value = res.data.result.map((item) => {
     return {
       label: item.name,
@@ -70,7 +84,7 @@ const selectQingqiu = async () => {
 const formValue = ref({
   title: '',
   description: '',
-  category_id: '',
+  category_id: null,
   keyword: '',
   content: '',
   cover: '',
@@ -125,7 +139,7 @@ const handleValidateClick = (e: MouseEvent) => {
       }
 
     } else {
-      message.error(errors)
+      message.error('所有字段必填！')
     }
   })
 }
@@ -144,6 +158,17 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+.info {
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
 
+.form-item {
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+  padding: 20px;
+  border-radius: 5px;
+}
 </style>

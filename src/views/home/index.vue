@@ -15,13 +15,10 @@
            data-wow-iteration="1" data-wow-offset="1" @click="gotoDetail(item._id)">
         <div class="card">
           <div class="card-img">
-            <img v-lazy=" bgImg[Math.ceil(Math.random() * 5)] || item.cover"/>
+            <img v-lazy="bgImg[Math.ceil(Math.random() * 5)] || item.cover"/>
           </div>
           <div class="titleInfo">
             <div class="title">{{ item.title }}</div>
-            <!--            <div class="description">-->
-            <!--              <span>{{ item.description }}</span>-->
-            <!--            </div>-->
             <div>
               <div class="divider">
                 <n-divider/>
