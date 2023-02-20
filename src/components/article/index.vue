@@ -197,6 +197,10 @@ onMounted(async () => {
     :deep(.default-theme table tbody tr):hover {
       background: var(--c-divider);
     }
+
+    :deep(.default-theme table tr td:nth-child(1)) {
+      min-width: 150px;
+    }
   }
 
   &:hover .edit {
