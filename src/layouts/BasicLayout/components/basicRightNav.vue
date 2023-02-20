@@ -31,7 +31,8 @@
     <div>
       <div class="recommend">
         <h5 class="rightTitle">{{ RightTitle }}</h5>
-        <div v-for="item in recommendList.list" :key="item._id" class="recommendItem animate__animated animate__fadeIn">
+        <div v-for="item in recommendList.list" :key="item._id" class="recommendItem animate__animated animate__fadeIn"
+             @click.stop="gotoDetail(item._id)">
           <div class="img">
             <img v-lazy="imgUrlList[Math.ceil(Math.random() * 10)]" alt="img">
           </div>
@@ -115,7 +116,9 @@ import useArticle from "@/stores/useArticle";
 import {useRoute} from "vue-router";
 import usePaging from "@/stores/usePaging";
 import {imgUrlList} from "@/layouts/BasicLayout/components/index";
+import {useRouter} from "vue-router";
 
+const router = useRouter()
 const pagingStore = usePaging()
 const route = useRoute()
 const articleStore = useArticle()
@@ -125,6 +128,11 @@ const getNewPage = (key) => {
   nowPage.value = key
 }
 const recommendList = reactive<{ list: Array<Specify.NewArticleList> }>({list: []})
+const performance = reactive<P>({
+  TakeUp: null,
+  TimeOut: null,
+  response: null
+})
 watchEffect(() => {
   switch (nowPage.value) {
     case 'newArticle-page':
@@ -180,11 +188,10 @@ type P = {
   TimeOut: string | null,
   response: string | null,
 }
-const performance = reactive<P>({
-  TakeUp: null,
-  TimeOut: null,
-  response: null
-})
+
+const gotoDetail = (id) => {
+  router.push(`/article/${id}`)
+}
 onMounted(() => {
   articleStore.getSpecifyList()
   let _per = window.performance;

@@ -110,12 +110,28 @@ const markedHeadingId = (_text, _level, index) => {
 watch(() => titleList.value, (val) => {
   articleStore.setTitleList(val)
 }, {deep: true})
+
+
+const getArticleDetailList = async (id) => {
+  try {
+    const res = await getArticleDetail(id)
+    content.value = res.data.articleDetail.content
+    articleData.detail = res.data
+    console.log('文章详情', res)
+    document.documentElement.scrollTop = 0
+  } catch (err) {
+
+  }
+}
+watch(() => route.params.id, async (val) => {
+  if (route.params.id) {
+    getArticleDetailList(val)
+  }
+})
 onMounted(async () => {
-  const res = await getArticleDetail(route.params.id)
-  content.value = res.data.articleDetail.content
-  articleData.detail = res.data
-  console.log('文章详情', res)
-  document.documentElement.scrollTop = 0
+  if (route.params.id) {
+    getArticleDetailList(route.params.id)
+  }
 })
 </script>
 
