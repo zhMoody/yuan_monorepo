@@ -6,10 +6,10 @@ const config = require('../config/index')
 class AdminInfoController {
   // 获取用户配置信息
   static async getAdminInfo(ctx, next) {
+    let admin_id = ctx.query.id
     const adminInfo = await AdminInfoModel.findOne({}, { admin_id: 0, __v: 0, createAt: 0 })
     if (!adminInfo) {
-      const user = await AdminModel.find({})
-      await AdminInfoModel.create({ admin_id: user._id })
+      await AdminInfoModel.create({ admin_id })
       throw new global.errs.NotFound('没有找到用户配置,已重新创建')
     }
     ctx.body = res.json(adminInfo)
