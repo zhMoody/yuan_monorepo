@@ -17,7 +17,7 @@ router.put("/categroy/:_id", CategroyController.updateCategroy)
 // 删除分类
 router.delete("/categroy/:_id", jwtAuth({ secret: config.security.secretKey }), CategroyController.deleteCategroy)
 
-// 获取该分类下所有文章
+// 获取分类下的所有文章
 router.get("/categroy/:_id", CategroyController.AllCategroy)
 
 module.exports = router;

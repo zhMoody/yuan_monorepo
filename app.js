@@ -36,6 +36,8 @@ const article = require("./router/article.js")
 const comment = require("./router/comment.js")
 const reply = require("./router/reply.js")
 const music = require('./router/music.js')
+const adminInfo = require('./router/adminInfo.js')
+
 // const advertise = require("./router/advertise.js")
 
 // 把errors挂载到GO的errs这个属性上
@@ -95,6 +97,10 @@ reply.allowedMethods();
 // 音乐模块
 app.use(music.routes())
 music.allowedMethods();
+
+// 用户配置信息模块
+app.use(adminInfo.routes())
+adminInfo.allowedMethods();
 
 // // 注册广告模块路由
 // app.use(advertise.routes());

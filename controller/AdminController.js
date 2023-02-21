@@ -5,6 +5,7 @@ const res = require('../core/helper')
 const bcrypt = require('../core/bcrypt')
 const jwt = require('jsonwebtoken');
 const config = require('../config/index')
+const AdminInfoModel = require('../models/AdminInfoModel')
 class AdminController {
   // 注册处理
   static async register(ctx, next) {
@@ -21,6 +22,8 @@ class AdminController {
       nickname,
       password: bcrypt.encryption(password2)
     })
+    let admin_id = user._id
+    await AdminInfoModel.create({ admin_id })
     ctx.body = res.json(user)
   }
   // 登录处理 

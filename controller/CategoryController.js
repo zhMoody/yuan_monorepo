@@ -25,6 +25,7 @@ class CategoryController {
     if (!categorylList) throw new global.errs.NotFound('没有找到所有分类')
     ctx.body = res.json({ result: categorylList })
   }
+
   // 更新分类
   static async updateCategroy(ctx, next) {
     const { name, keyword } = ctx.request.body
@@ -46,6 +47,7 @@ class CategoryController {
     }
     ctx.body = res.json('删除成功')
   }
+
   //查找该分类下的所有文章
   static async AllCategroy(ctx, next) {
     let category_id = ctx.params._id

@@ -6,7 +6,7 @@ const axios = require('axios')
 const res = require('../core/helper')
 const config = require('../config/index')
 class ArticleController {
-  // 创建分类
+  // 创建文章成功
   static async create(ctx, next) {
     articleValidator(ctx)
     const { title } = ctx.request.body
