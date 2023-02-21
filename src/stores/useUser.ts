@@ -45,10 +45,12 @@ export default defineStore('useUserStore', () => {
 
   const getUserConfigInfo = async () => {
     const res = await getConfigInfo()
+    delete res.data._id
+    delete res.data.id
     userInfo.value = {...userInfo.value, ...res.data}
     console.log(res)
   }
-  
+
   const logout = () => {
     nextTick(() => {
       userInfo.value = {...config}

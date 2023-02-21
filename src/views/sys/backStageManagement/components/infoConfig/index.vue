@@ -101,7 +101,7 @@ const handleValidateClick = () => {
 }
 onMounted(async () => {
   try {
-    const res = await getConfigInfo()
+    const res = await getConfigInfo(userStore.userInfo.id)
     formValue.value = res.data
     console.log(res)
   } catch (err: any) {

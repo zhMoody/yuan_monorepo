@@ -12,9 +12,10 @@ export const getUserInfo = () => request<any>({
   url: '/admin/user/info',
 });
 // 获取个人配置
-export const getConfigInfo = () => request<any>({
+export const getConfigInfo = (params?: any) => request<any>({
   method: 'GET',
-  url: '/adminInfo',
+  url: `/adminInfo?id=${params}`,
+
 });
 // 更新个人配置
 export const updateConfigInfo = (params, data) => request<any>({
