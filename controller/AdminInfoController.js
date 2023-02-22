@@ -19,9 +19,7 @@ class AdminInfoController {
   // 更新文章
   static async updateAdminInfo(ctx, next) {
     let admin_id = ctx.params.id
-    console.log('ctx.params.admin_id :>> ', ctx.params.id);
     const updatedAdminInfo = await AdminInfoModel.findOneAndUpdate({ admin_id }, ctx.request.body)
-    console.log(updatedAdminInfo);
     if (!updatedAdminInfo) {
       throw new global.errs.NotFound('没有找到用户的个人配置')
     }

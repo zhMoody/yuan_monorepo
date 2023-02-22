@@ -14,22 +14,37 @@ const AdminInfoSchema = new mongoose.Schema({
     }
   },
   baseAvatarUrl: {
+    require: true,
     type: String,
     default: 'https://q1.qlogo.cn/g?b=qq&nk=2693131889&s=100'
   },
   userIntro: {
+    require: true,
     type: String,
     default: '从此烟雨落青城 一人撑伞两人行。'
   },
   leftFooter: {
+    require: true,
     type: String,
     default: 'Moody'
   },
   rightFooter: {
+    require: true,
     type: String,
     default: 'Yuan'
   },
+  homeTitle: {
+    require: true,
+    type: String,
+    default: '- Yuan -'
+  },
+  homeIntro: {
+    require: true,
+    type: String,
+    default: '&(￣︶￣)↗[GO!][]~(￣▽￣)~*'
+  },
   admin_id: {
+    require: true,
     type: mongoose.Schema.Types.ObjectId,
     // 引用
     ref: 'Admin'

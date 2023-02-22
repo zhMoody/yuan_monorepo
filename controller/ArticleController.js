@@ -102,13 +102,11 @@ class ArticleController {
     }
     let newArticleList = await ArticleModel.find({}, { __v: 0, content: 0 },
       {
-        skip: 1,
         limit: 5,
         populate: 'category_id'
-      }).sort({ created: -1 })
+      }).sort({ _id: -1 })
     let mostViewedList = await ArticleModel.find({}, { __v: 0, content: 0 },
       {
-        skip: 1,
         limit: 5,
         populate: 'category_id'
       }).sort({ browse: -1 })
