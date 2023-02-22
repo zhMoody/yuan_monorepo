@@ -1,8 +1,8 @@
 <template>
   <div class="content  animate__animated  animate__fadeIn">
     <div class="HomeTitle">
-      <h1 style="color: var(--c-text-666)">- {{ userStore.userInfo?.userName }} -</h1>
-      <h3 style="color: var(--c-text-666)">&(￣︶￣)↗[GO!][]~(￣▽￣)~*</h3>
+      <h1 style="color: var(--c-text-666)">{{ userStore.userInfo?.homeTitle }}</h1>
+      <h3 style="color: var(--c-text-666)"> {{ userStore.userInfo?.homeIntro }}</h3>
     </div>
     <div v-show="!showPagination" class="empty">
       <NEmpty description="还没有文章，去创建属于你的第一篇文章吧！" size="large">

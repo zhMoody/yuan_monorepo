@@ -509,7 +509,7 @@ onMounted(async () => {
     position: absolute;
     top: 50px;
     right: 0;
-    width: 254px;
+    width: 280px;
     height: v-bind(translate);
     border-radius: 0 0 5px 5px;
     //transform: v-bind(translate);
@@ -542,7 +542,7 @@ onMounted(async () => {
     height: 100%;
 
     .onPlay {
-      animation: onPlayIcon .7s steps(3) infinite;
+      animation: onPlayIcon .7s infinite linear;
       transform-origin: center center;
     }
   }
@@ -580,7 +580,7 @@ onMounted(async () => {
 .container {
   height: 250px;
   overflow-y: scroll;
-  width: 250px;
+  width: 280px;
   backdrop-filter: var(--c-base-blur);
 }
 
@@ -638,6 +638,16 @@ onMounted(async () => {
     transform: translate(-50%, 0);
     width: 100% !important;
     margin: 0 auto;
+  }
+
+  .box {
+    width: 100% !important;
+  }
+
+  .container {
+    width: 100% !important;
+    padding: 0 10px;
+
   }
 }
 </style>

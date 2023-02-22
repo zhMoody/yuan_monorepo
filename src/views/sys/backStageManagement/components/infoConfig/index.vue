@@ -23,6 +23,16 @@
           </n-form-item>
         </n-gi>
         <n-gi>
+          <n-form-item label="首页标题" path="homeTitle">
+            <n-input v-model:value="formValue.homeTitle" placeholder="首页标题"/>
+          </n-form-item>
+        </n-gi>
+        <n-gi>
+          <n-form-item label="首页简介" path="homeIntro">
+            <n-input v-model:value="formValue.homeIntro" placeholder="首页简介"/>
+          </n-form-item>
+        </n-gi>
+        <n-gi>
           <n-form-item label="页脚左边" path="leftFooter">
             <n-input v-model:value="formValue.leftFooter" placeholder="页脚左边"/>
           </n-form-item>
@@ -54,6 +64,8 @@ const formValue = ref({
   baseAvatarUrl: '',
   leftFooter: '',
   rightFooter: '',
+  homeTitle: '',
+  homeIntro: '',
 })
 const rules = {
   userName: {
@@ -69,6 +81,16 @@ const rules = {
   baseAvatarUrl: {
     required: true,
     message: '请输入blog头像Url',
+    trigger: 'blur'
+  },
+  homeTitle: {
+    required: true,
+    message: '请输入首页标题',
+    trigger: 'blur'
+  },
+  homeIntro: {
+    required: true,
+    message: '请输入首页简介',
     trigger: 'blur'
   },
   leftFooter: {
