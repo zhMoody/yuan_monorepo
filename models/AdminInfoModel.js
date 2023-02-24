@@ -7,8 +7,9 @@ const AdminInfoSchema = new mongoose.Schema({
   userName: { type: String, default: 'Yuan' },//评论人昵称
   createAt: {
     type: Date,
+    require: true,
     default: Date.now,
-    // 处理时间 
+    // 处理时间
     get(val) {
       return moment(val).format('YYYY-MM-DD HH:mm:ss')
     }
@@ -42,6 +43,11 @@ const AdminInfoSchema = new mongoose.Schema({
     require: true,
     type: String,
     default: '&(￣︶￣)↗[GO!][]~(￣▽￣)~*'
+  },
+  onFilebg: {
+    require: true,
+    type: String,
+    default: 'https://s1.ax1x.com/2020/07/26/apFekF.jpg'
   },
   admin_id: {
     require: true,
