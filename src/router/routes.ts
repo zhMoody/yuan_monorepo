@@ -32,6 +32,16 @@ export const frameIn: Array<RouteRecordRaw> = [
         },
       },
       {
+        path: '/placeOnFile',
+        name: 'placeOnFile',
+        component: () => import('@/views/placeOnFile/index.vue'),
+        meta: {
+          title: '归档',
+          keepAlive: true,
+          transition: 'animate__fadeIn'
+        },
+      },
+      {
         path: '/acg',
         name: 'acg',
         component: () => import('@/views/Acg/index.vue'),

@@ -2,7 +2,7 @@
   <div class="content  animate__animated  animate__fadeIn">
     <div class="HomeTitle">
       <h1 style="color: var(--c-text-666)">- 分类 "{{ route.query?.name }}" 下的文章 -</h1>
-      <h3 style="color: var(--c-text-666)">&(￣︶￣)↗[GO!][]~(￣▽￣)~*</h3>
+      <h3 style="color: var(--c-text-666)">{{ userStore.userInfo?.homeIntro }}</h3>
     </div>
     <div v-show="!articleList.list.length" class="empty">
       <NEmpty description="该分类还没有文章！" size="large">
@@ -61,7 +61,9 @@ import WOW from "wow.js";
 import dayjs from 'dayjs'
 import {getCategroyItem} from "@/api/article";
 import {useRoute, useRouter} from "vue-router";
+import useUser from "@/stores/useUser";
 
+const userStore = useUser()
 const route = useRoute()
 const router = useRouter()
 const articleList = reactive<any>({list: []})

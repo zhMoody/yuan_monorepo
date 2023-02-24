@@ -13,7 +13,8 @@ export interface UserInfo {
   _id?: string,
   userIntro: string,
   userName: string,
-  baseAvatarUrl: string
+  baseAvatarUrl: string,
+  onfile?: Array<ConfigInfo.Onfile>
 }
 
 const defaultUserInfo = {
@@ -21,7 +22,8 @@ const defaultUserInfo = {
   token: '',
   avatar: '',
   _id: '',
-  ...config
+  ...config,
+  onfile: []
 };
 export default defineStore('useUserStore', () => {
   const userInfo = ref<UserInfo>(defaultUserInfo)
@@ -45,9 +47,12 @@ export default defineStore('useUserStore', () => {
 
   const getUserConfigInfo = async () => {
     const res = await getConfigInfo()
-    delete res.data._id
-    delete res.data.id
-    userInfo.value = {...userInfo.value, ...res.data}
+    // @ts-ignore
+    delete res.data.result._id
+    // @ts-ignore
+    delete res.data.result.id
+    userInfo.value = {...userInfo.value, ...res.data.result}
+    userInfo.value.onfile = res.data.onfile
     console.log(res)
   }
 

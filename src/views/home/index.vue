@@ -97,7 +97,7 @@ const nextPage = async (info: PaginationInfo) => {
 watch(() => paging.pagenum, () => {
   getList(paging)
 })
-const getList = async () => {
+const getList = async (data) => {
   try {
     const res = await getArticleList(paging)
     paging.pagesize = +res.data.pagesize
@@ -326,17 +326,12 @@ onMounted(() => {
       border-radius: 10px;
       height: 200px;
       box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
-      position: relative;
 
       img {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        //width: 100%;
-        //height: 100%;
-        transform: translate(-50%, -50%);
+
+        width: 100vmax;
+        height: 100%;
         transition: all .5s;
-        //opacity: .8;
       }
     }
   }

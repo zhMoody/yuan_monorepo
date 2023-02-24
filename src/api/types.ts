@@ -139,6 +139,42 @@ declare module CategroyData {
 
 }
 
+declare module ConfigInfo {
+
+  export interface Result {
+    userName: string;
+    baseAvatarUrl: string;
+    userIntro: string;
+    leftFooter: string;
+    rightFooter: string;
+    homeTitle: string;
+    homeIntro: string;
+    _id: string;
+    createAt: string;
+    id: string;
+  }
+
+  export interface Onfile {
+    _id: string;
+    title: string;
+    author: string;
+    created: Date;
+    __v: number;
+  }
+
+  export interface Data {
+    result: Result;
+    onfile: Onfile[];
+  }
+
+  export interface RootObject {
+    msg: string;
+    errorCode: number;
+    code: number;
+    data: Data;
+  }
+
+}
 
 declare module Specify {
 

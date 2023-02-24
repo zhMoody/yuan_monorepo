@@ -12,7 +12,7 @@ export const getUserInfo = () => request<any>({
   url: '/admin/user/info',
 });
 // 获取个人配置
-export const getConfigInfo = (params?: any) => request<any>({
+export const getConfigInfo = (params?: any): Promise<ConfigInfo.RootObject> => request({
   method: 'GET',
   url: `/adminInfo?id=${params}`,
 

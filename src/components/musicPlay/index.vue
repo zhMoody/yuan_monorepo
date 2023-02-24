@@ -5,9 +5,11 @@
         <Icon v-if="!options.play" color="var(--c-text-666)" size="24" @click.stop="showBox">
           <BowlingBallOutline></BowlingBallOutline>
         </Icon>
+
         <Icon v-else="options.play" class="onPlay" color="var(--c-text-666)" size="24" @click.stop="showBox">
           <MusicalNotesOutline></MusicalNotesOutline>
         </Icon>
+
       </div>
       <div class="music-posa wow animate__animated animate__fadeIn">
         <div class="player">

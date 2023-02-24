@@ -201,6 +201,11 @@ const navigationList = reactive([
     icon: "#icon-zhuye"
   },
   {
+    name: "归档",
+    path: "/placeOnFile",
+    icon: "#icon-wendang"
+  },
+  {
     name: "关于",
     path: "/acg",
     icon: "#icon-biaoqian1"

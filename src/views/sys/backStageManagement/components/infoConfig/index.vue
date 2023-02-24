@@ -7,6 +7,11 @@
       label-placement="top"
     >
       <n-grid :cols="2" class="info" x-gap="12">
+        <n-gi :span="2">
+          <div style="margin-bottom: 30px;font-size: 20px">
+            博客头部配置
+          </div>
+        </n-gi>
         <n-gi>
           <n-form-item label="blog展示名" path="userName">
             <n-input v-model:value="formValue.userName" placeholder="blog展示名"/>
@@ -33,6 +38,26 @@
           </n-form-item>
         </n-gi>
         <n-gi>
+          <n-form-item label="博客运行开始时间" path="createAt">
+            <n-input v-model:value="formValue.createAt" placeholder="博客运行开始时间"/>
+          </n-form-item>
+        </n-gi>
+        <n-gi :span="2">
+          <div style="margin-bottom: 30px;font-size: 20px">
+            博客归档配置
+          </div>
+        </n-gi>
+        <n-gi>
+          <n-form-item label="归档背景图片Url" path="leftFooter">
+            <n-input v-model:value="formValue.onFilebg" placeholder="归档背景图片Url"/>
+          </n-form-item>
+        </n-gi>
+        <n-gi :span="2">
+          <div style="margin-bottom: 30px;font-size: 20px">
+            博客底部配置
+          </div>
+        </n-gi>
+        <n-gi>
           <n-form-item label="页脚左边" path="leftFooter">
             <n-input v-model:value="formValue.leftFooter" placeholder="页脚左边"/>
           </n-form-item>
@@ -41,6 +66,8 @@
           <n-form-item label="页脚右边" path="rightFooter">
             <n-input v-model:value="formValue.rightFooter" placeholder="页脚右边"/>
           </n-form-item>
+        </n-gi>
+        <n-gi>
           <n-button attr-type="button" type="success" @click="handleValidateClick">
             更新配置
           </n-button>
@@ -66,6 +93,8 @@ const formValue = ref({
   rightFooter: '',
   homeTitle: '',
   homeIntro: '',
+  onFilebg: '',
+  createAt: Date.now()
 })
 const rules = {
   userName: {
@@ -91,6 +120,16 @@ const rules = {
   homeIntro: {
     required: true,
     message: '请输入首页简介',
+    trigger: 'blur'
+  },
+  createAt: {
+    required: true,
+    message: '请输入运行开始时间',
+    trigger: 'blur'
+  },
+  onFilebg: {
+    required: true,
+    message: '请输入归档背景图片Url',
     trigger: 'blur'
   },
   leftFooter: {
@@ -124,7 +163,7 @@ const handleValidateClick = () => {
 onMounted(async () => {
   try {
     const res = await getConfigInfo(userStore.userInfo.id)
-    formValue.value = res.data
+    formValue.value = res.data.result
     console.log(res)
   } catch (err: any) {
     message.error(err)

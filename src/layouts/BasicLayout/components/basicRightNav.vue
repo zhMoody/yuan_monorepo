@@ -73,7 +73,7 @@
                 <Icon color="var(--c-text-666)" size="12">
                   <CodeSlashOutline></CodeSlashOutline>
                 </Icon>
-                <span>DOM渲染耗时</span></div>
+                <span>渲染耗时</span></div>
               <span class="blogInfo-content-right-text">{{ performance.TimeOut }}</span></li>
             <li>
               <div class="blogInfo-content-left-text">
@@ -82,6 +82,13 @@
                 </Icon>
                 <span>响应耗时</span></div>
               <span class="blogInfo-content-right-text">{{ performance.response }}</span></li>
+            <li>
+              <div class="blogInfo-content-left-text">
+                <Icon color="var(--c-text-666)" size="12">
+                  <CalendarOutline></CalendarOutline>
+                </Icon>
+                <span>博客已运行</span></div>
+              <span class="blogInfo-content-right-text">{{ formateDate }}</span></li>
           </ul>
         </div>
       </div>
@@ -107,7 +114,8 @@ import {
   CalculatorOutline,
   CodeSlashOutline,
   EarthOutline,
-  PersonOutline
+  PersonOutline,
+  CalendarOutline
 } from '@vicons/ionicons5'
 import {Icon} from "@vicons/utils/lib";
 import {NDivider} from 'naive-ui'
@@ -117,7 +125,14 @@ import {useRoute} from "vue-router";
 import usePaging from "@/stores/usePaging";
 import {imgUrlList} from "@/layouts/BasicLayout/components/index";
 import {useRouter} from "vue-router";
+import useUser from "@/stores/useUser";
 
+type P = {
+  TakeUp: string | null,
+  TimeOut: string | null,
+  response: string | null,
+}
+const userStore = useUser()
 const router = useRouter()
 const pagingStore = usePaging()
 const route = useRoute()
@@ -183,15 +198,32 @@ const sectionChange = (child) => {
     }
   }
 }
-type P = {
-  TakeUp: string | null,
-  TimeOut: string | null,
-  response: string | null,
-}
-
+//跳转到详情页
 const gotoDetail = (id) => {
   router.push(`/article/${id}`)
 }
+
+const formateDate = computed(() => {
+  function addZero(n) {
+    return n >= 10 ? n : `0${n}`
+  }
+
+  let seconds = 1000
+  let minutes = seconds * 60
+  let hours = minutes * 60
+  let days = hours * 24
+  let years = days * 365
+  let t1: any = new Date(userStore.userInfo?.createAt)
+  let t2 = Date.now()
+  let diff = t2 - t1
+  let diffYears = Math.floor(diff / years)
+  let diffDays = Math.floor((diff / days) - diffYears * 365)
+  if (!diffYears) {
+    return `${diffDays || 0}天`
+  } else {
+    return `${diffYears} 年 ${addZero(diffDays)} 天`
+  }
+})
 onMounted(() => {
   articleStore.getSpecifyList()
   let _per = window.performance;
@@ -245,8 +277,9 @@ onMounted(() => {
 
       .blogInfo-content-right-text {
         padding: 0 10px;
-        background: #fffccc;
-        border-radius: 3px;
+        background: var(--c-info-bg);
+        border-radius: 5px;
+        color: var(--c-info-text);
       }
     }
   }
