@@ -1,13 +1,13 @@
 {
   "name": "vue3tstemplate",
   "private": true,
-  "version": "0.2.12",
+  "version": "0.3.12",
   "type": "module",
   "scripts": {
     "dev": "vite --mode development",
     "build": "vite build --mode production",
     "preview": "vite preview --port 3222",
-    "build:prod": "pnpm run build && docker build  --platform linux/amd64 -f ./Docker/Dockerfile  -t code3006/yuan:0.2.12 ."
+    "build:prod": "pnpm run build && docker build  --platform linux/amd64 -f ./Docker/Dockerfile  -t code3006/yuan:0.3.12 ."
   },
   "dependencies": {
     "animate.css": "^4.1.1",

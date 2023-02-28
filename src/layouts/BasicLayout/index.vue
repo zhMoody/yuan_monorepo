@@ -164,7 +164,7 @@ onMounted(() => {
       background: var(--c-bg-settingTitle);
       border-radius: 40px 0 0 40px;
       line-height: 46px;
-      padding: 0 20px;
+      padding: 0 13px;
       box-shadow: rgba(191, 170, 183, 0.1) -1px 0px;
     }
 

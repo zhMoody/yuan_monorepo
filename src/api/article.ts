@@ -31,7 +31,10 @@ export const updateArticle = (params, data): Promise<DeleteArticle.RootObject> =
   data
 })
 
-// 删除文章
+/**
+ * 添加文章
+ * @param data
+ * */
 export const addArticle = (data): Promise<DeleteArticle.RootObject> => request({
   url: `/article`,
   method: 'post',

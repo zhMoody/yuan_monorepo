@@ -36,7 +36,7 @@
                   <Icon size="16">
                     <TimeOutline></TimeOutline>
                   </Icon>
-                  {{ formatTime(item.created) }}
+                  {{ dayjs(item.created).format('YYYY-MM-DD') }}
                 </div>
                 <div class="see">
                   <Icon size="16">
@@ -79,25 +79,21 @@ type Data = {
 const userStore = useUser()
 const pagingStore = usePaging()
 const router = useRouter()
-const articleList = reactive<any>({list: []})
+const articleList = reactive<{ list: Article.Result[] }>({list: []})
 const paging = reactive<Data>({
   pagesize: 6,
   pagenum: 1,
   tootal: 0
 })
-const showPagination = ref(false)
+const showPagination = ref<boolean>(false)
 const nextPage = async (info: PaginationInfo) => {
-  let data = {
-    pagesize: info.pageSize,
-    pagenum: info.page,
-  }
   paging.pagesize = info.pageSize
   paging.pagenum = info.page
 }
 watch(() => paging.pagenum, () => {
   getList(paging)
 })
-const getList = async (data) => {
+const getList = async (data?) => {
   try {
     const res = await getArticleList(paging)
     paging.pagesize = +res.data.pagesize
@@ -115,9 +111,7 @@ const getList = async (data) => {
 const gotoDetail = (id) => {
   router.push(`/article/${id}`)
 }
-const formatTime = computed((item) => () => {
-  return dayjs(item).format('YYYY-MM-DD')
-})
+
 onMounted(() => {
   getList()
   userStore.getUserConfigInfo()

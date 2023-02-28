@@ -181,6 +181,9 @@ const handleChange = (e) => {
 const voiceSelect = () => {
   singeBox.value!.volume = options.voiceVal / 100;
 }
+/**
+ * @param {string} flag 执行的命令
+ */
 const musicPlay = (flag) => {
   switch (flag) {
     case "pre":
