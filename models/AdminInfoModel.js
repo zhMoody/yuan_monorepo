@@ -49,6 +49,11 @@ const AdminInfoSchema = new mongoose.Schema({
     type: String,
     default: 'https://s1.ax1x.com/2020/07/26/apFekF.jpg'
   },
+  blogTitle: {
+    require: true,
+    type: String,
+    default: "Yuan's blog"
+  },
   admin_id: {
     require: true,
     type: mongoose.Schema.Types.ObjectId,

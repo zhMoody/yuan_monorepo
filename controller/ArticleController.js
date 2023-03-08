@@ -19,11 +19,7 @@ class ArticleController {
   }
 
   // 获取文章列表
-  /*
-   *  获取所有文章
-   *  category_id： 根据分类查找文章
-   *  keyword： 根据关键字获取文章
-   */
+
   static async getArticleList(ctx, next) {
     let { pagenum = 1, pagesize = 10, keyword, category_id = null } = ctx.query
     let tootal = await ArticleModel.find().countDocuments()
