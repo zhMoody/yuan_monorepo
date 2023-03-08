@@ -11,7 +11,12 @@
   <!--    </div>-->
   <!--    <code class="code">{{ virtualList }}</code>-->
   <!--  </div>-->
+
   <div class="content">
+    <!--    <div v-if="isGo">数据获取中，{{ timer }}后跳转</div>-->
+    <!--    <div v-else>取消了跳转</div>-->
+    <!--    <NButton @click="getData">获取数据</NButton>-->
+    <!--    <NButton @click="setIsGo">点击取消跳转</NButton>-->
     <div class="qrcode">
       <div ref="shellContainerRef" class="qrcodeBox">
         <QrcodeVue :size="size" :value="value" background="#0acf97" level="H"/>
@@ -33,8 +38,11 @@ import {arr} from './testData'
 import {reactive, ref, computed, watchEffect, nextTick} from "vue";
 import html2canvas from 'html2canvas'
 import QrcodeVue from 'qrcode.vue'
-import {NButton} from 'naive-ui'
+import {NButton, useMessage} from 'naive-ui'
+import {useRouter} from "vue-router";
 
+const router = useRouter()
+const message = useMessage()
 const value = ref<string>("http://36.133.74.165:9000/")
 const size = ref<string>('200')
 const shellContainerRef = ref<HTMLDivElement | null>()
@@ -65,6 +73,32 @@ const state = reactive({
   itemNum: 1,
   startIndex: 0,
 });
+
+// 跳转test
+// const timer = ref(5)
+// const isGo = ref(true)
+// const test = ref<NodeJS.Timer>()
+// const setIsGo = () => {
+//   isGo.value = false
+//   message.success('取消跳转成功')
+//   timer.value = 0
+//   clearInterval(timer.value);
+// }
+// const getData = () => {
+//   if (!isGo.value) {
+//     clearInterval(timer.value);
+//     isGo.value = true
+//     timer.value = 5
+//   }
+//   test.value = setInterval(() => {
+//     timer.value -= 1;
+//     if (timer.value === 0 && isGo.value) {
+//       router.push('/');
+//       clearInterval(timer.value);
+//     }
+//   }, 1000);
+// }
+
 
 const virtualList = computed(() => {
   let endIndex = state.startIndex + state.itemNum;

@@ -4,7 +4,7 @@
       <Icon color="var(--c-text-666)" size='24'>
         <Home tag="span"/>
       </Icon>
-      <span style="padding-left: 10px;color: var(--c-text-666)"> {{ store.userInfo.userName }}</span>
+      <span style="padding-left: 10px;color: var(--c-text-666)"> {{ store.userInfo.blogTitle }}</span>
       <!--      <img :src="store.userInfo.blogLogo " alt="" class="img">-->
     </div>
     <div class="onMobile" @click="showMenu">
