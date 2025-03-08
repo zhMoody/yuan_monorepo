@@ -3,7 +3,7 @@ const res = require('../core/helper')
 class MusicController {
   static async getMusic(ctx, next) {
 
-    let musicData = await axios.get("https://hubyo.cn/index.php/action/handsome-meting-api?server=netease&type=playlist&id=159016326&auth=77dfd5839cd695b4aef0f032fa2a02ea&r=0.4271286611798315")
+    let musicData = await axios.get("https://coder.cm/index.php/action/handsome-meting-api?server=netease&type=playlist&id=159016326&auth=97e9c422c7dc199d517dcd6cf9f833fa&r=0.705131969872477")
     console.log('res.data',);
     ctx.body = res.json(musicData.data)
   }
