@@ -31,6 +31,11 @@ export const auth = (data) => request<any>({
 })
 // 获取后台数据
 export const getMonitorData = () => request({
+  url: "admin/overview",
+  method: 'GET',
+})
+// 获取系统信息
+export const getSysInfo = () => request<any>({
   url: "admin/monitor",
   method: 'GET',
 })

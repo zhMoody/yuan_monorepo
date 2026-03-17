@@ -1,5 +1,5 @@
 <template>
-  <div class="content  animate__animated  animate__fadeIn">
+  <div class="content">
     <div class="HomeTitle">
       <h1 style="color: var(--c-text-666)">{{ userStore.userInfo?.homeTitle }}</h1>
       <h3 style="color: var(--c-text-666)"> {{ userStore.userInfo?.homeIntro }}</h3>
@@ -9,8 +9,11 @@
       </NEmpty>
     </div>
     <div class="itemContent">
-      <div v-for="item in articleList.list" :key="item._id" :class="`section wow animate__animated animate__fadeInUp`"
-           data-wow-duration="0.6s" data-wow-iteration="1" data-wow-offset="1" @click="gotoDetail(item._id)">
+      <div v-for="item in articleList.list" :key="item._id" 
+           :class="`section wow animate__animated animate__fadeIn`"
+           data-wow-duration="1s" 
+           data-wow-iteration="1" 
+           @click="gotoDetail(item._id)">
         <div class="card">
           <div class="card-img">
             <img
@@ -25,21 +28,21 @@
               <div class="info">
                 <!--            HappyOutline-->
                 <div class="name">
-                  <Icon size="16">
-                    <PersonOutline></PersonOutline>
-                  </Icon>
+                  <n-icon size="16">
+                    <PersonOutline />
+                  </n-icon>
                   {{ item.author }}
                 </div>
                 <div class="time">
-                  <Icon size="16">
-                    <TimeOutline></TimeOutline>
-                  </Icon>
+                  <n-icon size="16">
+                    <TimeOutline />
+                  </n-icon>
                   {{ dayjs(item.created).format('YYYY-MM-DD') }}
                 </div>
                 <div class="see">
-                  <Icon size="16">
-                    <EyeOutline></EyeOutline>
-                  </Icon>
+                  <n-icon size="16">
+                    <EyeOutline />
+                  </n-icon>
                   {{ item.browse }}
                 </div>
               </div>
@@ -55,15 +58,14 @@
   </div>
 </template>
 <script lang='ts' setup>
-import {onMounted, reactive, ref, watch} from 'vue';
+import {onMounted, onUnmounted, reactive, ref, watch, nextTick} from 'vue';
 import {getArticleList} from "@/api/article";
 import {bgImg} from "@/hooks/bgImport";
 import usePaging from "@/stores/usePaging";
 import useUser from "@/stores/useUser";
 import {EyeOutline, PersonOutline, TimeOutline} from '@vicons/ionicons5';
-import {Icon} from "@vicons/utils/lib";
 import dayjs from 'dayjs';
-import {NDivider, NEmpty, NPagination, PaginationInfo} from 'naive-ui';
+import {NDivider, NEmpty, NPagination, NIcon, PaginationInfo} from 'naive-ui';
 import {useRouter} from "vue-router";
 import WOW from "wow.js";
 
@@ -92,14 +94,18 @@ watch(() => paging.pagenum, () => {
 const getList = async (data?) => {
   try {
     const res = await getArticleList(paging)
-    paging.pagesize = +res.data.pagesize
-    paging.pagenum = +res.data.pagenum
-    paging.tootal = +res.data.tootal
-    pagingStore.setTootal(paging.tootal)
-    articleList.list = res.data.result
-    if (articleList.list.length) showPagination.value = true
-    document.documentElement.scrollTop = 0
+    if (res.code === 200) {
+      articleList.list = Array.isArray(res.data) ? res.data : (res.data.result || [])
+
+      paging.pagesize = +(res.data.pagesize || paging.pagesize)
+      paging.pagenum = +(res.data.pagenum || paging.pagenum)
+      paging.tootal = +(res.data.tootal || articleList.list.length)
+
+      pagingStore.setTootal(paging.tootal)
+      showPagination.value = articleList.list.length > 0
+    }
   } catch (err) {
+    console.error('获取文章列表失败:', err)
     showPagination.value = false
   }
 }
@@ -108,21 +114,27 @@ const gotoDetail = (id) => {
   router.push(`/article/${id}`)
 }
 
-onMounted(() => {
-  getList()
+let wow: any = null
+
+onMounted(async () => {
+  await getList()
   userStore.getUserConfigInfo()
-  let wow = new WOW({
+  await nextTick()
+  wow = new WOW({
     boxClass: "wow",
     animateClass: "animated",
     offset: 0,
     mobile: true,
     live: true,
-    callback: function () {
-    },
-    scrollContainer: false,
-    resetAnimation: true,
+    resetAnimation: false,
   })
   wow.init()
+})
+
+onUnmounted(() => {
+  if (wow && wow.stop) {
+    wow.stop()
+  }
 })
 
 </script>
@@ -137,7 +149,6 @@ onMounted(() => {
   overflow: hidden;
   border-radius: 2px;
   box-shadow: 0 1px 3px rgb(0 0 0 / 5%);
-  background: var(--c-f1f3f4);
 
   .HomeTitle {
     min-height: 120px;

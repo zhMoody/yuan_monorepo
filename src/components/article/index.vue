@@ -5,50 +5,50 @@
       <div class="info">
         <!--            HappyOutline-->
         <div class="name">
-          <Icon size="16">
-            <PersonOutline></PersonOutline>
-          </Icon>
+          <NIcon size="16">
+            <PersonOutline />
+          </NIcon>
           {{ articleData.detail.articleDetail?.author }}
         </div>
         <div class="time">
-          <Icon size="16">
-            <TimeOutline></TimeOutline>
-          </Icon>
+          <NIcon size="16">
+            <TimeOutline />
+          </NIcon>
           {{ formatTime(articleData.detail.articleDetail?.created) }}
         </div>
         <div class="see">
-          <Icon size="16">
-            <EyeOutline></EyeOutline>
-          </Icon>
+          <NIcon size="16">
+            <EyeOutline />
+          </NIcon>
           {{ articleData.detail.articleDetail?.browse }}次浏览
         </div>
         <div class="see">
-          <Icon size="16">
-            <LanguageOutline></LanguageOutline>
-          </Icon>
+          <NIcon size="16">
+            <LanguageOutline />
+          </NIcon>
           {{ content.length }}字
         </div>
         <div class="category">
-          <Icon size="16">
-            <StarOutline></StarOutline>
-          </Icon>
+          <NIcon size="16">
+            <StarOutline />
+          </NIcon>
           {{ articleData.detail.articleDetail?.category_id?.name }}
         </div>
       </div>
     </div>
     <div class="content">
       <div class="back">
-        <Icon size="16">
-          <HomeOutline></HomeOutline>
-        </Icon>
-        <n-tooltip trigger="hover">
+        <NIcon size="16">
+          <HomeOutline />
+        </NIcon>
+        <NTooltip trigger="hover">
           <template #trigger>
             <span class="goHome" @click="goToHome">  首页 </span>
           </template>
           <div style="font-size: 12px">
             返回首页
           </div>
-        </n-tooltip>
+        </NTooltip>
         <span style="color: var(--c-text-secondary)"> / 正文</span>
       </div>
       <div class="edit">
@@ -77,8 +77,7 @@ import {
   StarOutline,
   HomeOutline
 } from '@vicons/ionicons5'
-import {NTooltip, NDivider} from 'naive-ui'
-import {Icon} from "@vicons/utils/lib";
+import {NTooltip, NDivider, NIcon} from 'naive-ui'
 import {useRoute, useRouter} from "vue-router";
 import {getArticleDetail} from "@/api/article";
 import MdEditor from 'md-editor-v3';
@@ -117,7 +116,6 @@ const getArticleDetailList = async (id) => {
     const res = await getArticleDetail(id)
     content.value = res.data.articleDetail.content
     articleData.detail = res.data
-    console.log('文章详情', res)
     document.documentElement.scrollTop = 0
   } catch (err) {
 

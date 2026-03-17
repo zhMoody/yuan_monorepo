@@ -1,26 +1,26 @@
 <template>
   <div class='basic-layout' @scroll="scoll">
     <div class="box-show">
-      <basic-header class="header  animate__animated  animate__fadeIn"/>
+      <basic-header class="header"/>
       <main class="basic">
         <div v-if="!menuStore.isShowMenu.ShowMenu">
-          <BasicMenu class="basic-menu animate__animated  animate__fadeIn"></BasicMenu>
+          <BasicMenu class="basic-menu"></BasicMenu>
         </div>
-        <div class="content  animate__animated  animate__fadeIn">
-          <router-view v-slot='{ Component, route }'>
-            <keep-alive>
-              <transition :enter-active-class='`animate__animated ${route.meta.transition}`'>
-                <component :is='Component' v-if='route.meta.keepAlive'></component>
-              </transition>
-            </keep-alive>
-            <transition :enter-active-class='`animate__animated ${route.meta.transition}`'>
-              <component :is='Component' v-if='!route.meta.keepAlive'></component>
+        <div class="content">
+          <router-view v-slot="{ Component, route }">
+            <transition name="page-fade" mode="out-in">
+              <keep-alive>
+                <component :is="Component" v-if="route.meta.keepAlive" :key="route.path" />
+              </keep-alive>
+            </transition>
+            <transition name="page-fade" mode="out-in">
+              <component :is="Component" v-if="!route.meta.keepAlive" :key="route.path" />
             </transition>
           </router-view>
-          <basic-footer class=" animate__animated  animate__fadeIn"/>
+          <basic-footer/>
         </div>
         <n-back-top :right="menuStore.isShowMenu.menwWidth > 750 ? 100:10" style="background: var(--c-f9f9f930)"/>
-        <BasicRightNav class="basic-right-nav  animate__animated  animate__fadeIn"></BasicRightNav>
+        <BasicRightNav class="basic-right-nav"></BasicRightNav>
         <div class="setting">
 
           <n-tooltip placement="left" trigger="hover">
@@ -58,7 +58,7 @@
 // import BasicHeader from './components/BasicHeader.vue';
 // import BasicFooter from './components/BasicFooter.vue';
 import {defineAsyncComponent, watchEffect, watch, ref, onMounted} from 'vue';
-import {NBackTop, NTooltip, NSwitch} from 'naive-ui'
+import {NBackTop, NTooltip, NSwitch, NIcon} from 'naive-ui'
 import {SettingsOutline, ArrowBackOutline, ArrowForwardOutline} from '@vicons/ionicons5'
 import {Icon} from '@vicons/utils'
 import {useDark, useToggle} from '@vueuse/core'
@@ -140,6 +140,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   background: var(--c-bg-body);
+  transition: background-color 0.5s ease, color 0.5s ease;
 
 
   .setting {
@@ -234,7 +235,7 @@ onMounted(() => {
       min-height: calc(100vh - 50px);
       background-color: var(--c-f9f9f930);
       //overflow: scroll;
-      transition: all .5s;
+      transition: all .5s, background-color 0.5s ease;
 
       &::-webkit-scrollbar {
         width: 0px;
@@ -248,20 +249,25 @@ onMounted(() => {
 
     .basic-right-nav {
       background-color: var(--c-f9f9f930);
+      transition: background-color 0.5s ease;
+    }
+
+    .content {
+      background: var(--c-f1f3f4);
+      min-height: calc(100vh - 120px);
+      transition: background-color 0.5s ease;
     }
   }
 }
 
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity .5s;
+.page-fade-enter-active,
+.page-fade-leave-active {
+  transition: opacity 0.3s ease;
 }
 
-.fade-enter,
-.fade-leave-to
-
-  /* .fade-leave-active below version 2.1.8 */ {
+.page-fade-enter-from,
+.page-fade-leave-to {
   opacity: 0;
 }
 
@@ -270,14 +276,13 @@ onMounted(() => {
   box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
 }
 
-@media screen and (max-width: 1210px) {
+@media screen and (max-width: 1100px) {
   .basic-layout {
     width: 1000px;
-
   }
 
   .basic-layout .basic {
-    grid-template-columns:260px 1fr;
+    grid-template-columns: 260px 1fr;
   }
 
   .basic-layout .basic .basic-right-nav {
@@ -286,7 +291,7 @@ onMounted(() => {
   }
 }
 
-@media screen and (max-width: 1100px) {
+@media screen and (max-width: 1000px) {
   .basic-layout {
     width: 800px;
   }
@@ -294,6 +299,7 @@ onMounted(() => {
   .basic-layout .basic {
     grid-template-columns: 220px 1fr;
   }
+
 
   .basic-layout .basic .basic-right-nav {
     width: 0;

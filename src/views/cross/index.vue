@@ -52,7 +52,7 @@ import {NTimeline, NTimelineItem, NButton, NInput} from 'naive-ui'
 import useUser from "@/stores/useUser";
 import dayjs from "dayjs";
 import WOW from "wow.js";
-import {onMounted, ref} from "vue";
+import {onMounted, onUnmounted, ref, nextTick} from "vue";
 import {useRouter} from 'vue-router'
 
 const router = useRouter()
@@ -61,19 +61,25 @@ const gotoDetail = (id) => {
 }
 const userStore = useUser()
 const value = ref('')
-onMounted(() => {
-  let wow = new WOW({
+let wow: any = null
+
+onMounted(async () => {
+  await nextTick()
+  wow = new WOW({
     boxClass: "wow",
     animateClass: "animated",
     offset: 0,
     mobile: true,
-    live: true,
-    callback: function () {
-    },
-    scrollContainer: false,
+    live: false,
     resetAnimation: true,
   })
   wow.init()
+})
+
+onUnmounted(() => {
+  if (wow && wow.stop) {
+    wow.stop()
+  }
 })
 </script>
 

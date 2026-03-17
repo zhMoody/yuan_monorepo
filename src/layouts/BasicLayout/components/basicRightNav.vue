@@ -5,21 +5,21 @@
         <div class="theme-switcher">
           <input id="newArticle-page" name="activePage" type="radio">
           <label for="newArticle-page" @click="getNewPage('newArticle-page')">
-            <Icon size="25">
-              <HappyOutline></HappyOutline>
-            </Icon>
+            <n-icon size="25">
+              <HappyOutline />
+            </n-icon>
           </label>
           <input id="mostViewed-page" name="activePage" type="radio">
           <label for="mostViewed-page" @click="getNewPage('mostViewed-page')">
-            <Icon size="25">
-              <HeartOutline></HeartOutline>
-            </Icon>
+            <n-icon size="25">
+              <HeartOutline />
+            </n-icon>
           </label>
           <input id="recommend-page" name="activePage" type="radio">
           <label for="recommend-page" @click="getNewPage('recommend-page')">
-            <Icon size="25">
-              <GiftOutline></GiftOutline>
-            </Icon>
+            <n-icon size="25">
+              <GiftOutline />
+            </n-icon>
           </label>
           <span class="slider"></span>
         </div>
@@ -28,25 +28,27 @@
     <div class="divider">
       <NDivider></NDivider>
     </div>
-    <div>
-      <div class="recommend">
-        <h5 class="rightTitle">{{ RightTitle }}</h5>
-        <div v-for="item in recommendList.list" :key="item._id" class="recommendItem animate__animated animate__fadeIn"
-             @click.stop="gotoDetail(item._id)">
-          <div class="img">
-            <img v-lazy="imgUrlList[Math.ceil(Math.random() * 6)]" alt="img">
-          </div>
-          <div class="rightInfoBox">
-            <span>{{ item.title }}</span>
-            <div class="author">
-              <Icon color="var(--c-text-666)" size="12">
-                <PersonOutline></PersonOutline>
-              </Icon>
-              <span>{{ item.author }}</span>
+    <div class="recommend">
+      <h5 class="rightTitle">{{ RightTitle }}</h5>
+      <transition name="list-fade" mode="out-in">
+        <div :key="nowPage">
+          <div v-for="(item, index) in recommendList.list" :key="item._id" class="recommendItem"
+               @click.stop="gotoDetail(item._id)">
+            <div class="img">
+              <img v-lazy="imgUrlList[index % imgUrlList.length]" alt="img">
+            </div>
+            <div class="rightInfoBox">
+              <span>{{ item.title }}</span>
+              <div class="author">
+                <Icon color="var(--c-text-666)" size="12">
+                  <PersonOutline></PersonOutline>
+                </Icon>
+                <span>{{ item.author }}</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </transition>
     </div>
     <div class="blogInfo">
       <div class="blogInfo-title">
@@ -59,7 +61,7 @@
                   <BulbOutline></BulbOutline>
                 </Icon>
                 <span>文章总数</span></div>
-              <span class="blogInfo-content-right-text">{{ pagingStore.fenye.tootal }}</span>
+              <span :style="{ backgroundColor: colorList[0] }" class="blogInfo-content-right-text">{{ pagingStore.fenye.tootal }}</span>
             </li>
             <li>
               <div class="blogInfo-content-left-text">
@@ -67,28 +69,28 @@
                   <CalculatorOutline></CalculatorOutline>
                 </Icon>
                 <span>内存占用</span></div>
-              <span class="blogInfo-content-right-text">{{ performance.TakeUp }}</span></li>
+              <span :style="{ backgroundColor: colorList[1] }" class="blogInfo-content-right-text">{{ performance.TakeUp }}</span></li>
             <li>
               <div class="blogInfo-content-left-text">
                 <Icon color="var(--c-text-666)" size="12">
                   <CodeSlashOutline></CodeSlashOutline>
                 </Icon>
                 <span>渲染耗时</span></div>
-              <span class="blogInfo-content-right-text">{{ performance.TimeOut }}</span></li>
+              <span :style="{ backgroundColor: colorList[2] }" class="blogInfo-content-right-text">{{ performance.TimeOut }}</span></li>
             <li>
               <div class="blogInfo-content-left-text">
                 <Icon color="var(--c-text-666)" size="12">
                   <EarthOutline></EarthOutline>
                 </Icon>
                 <span>响应耗时</span></div>
-              <span class="blogInfo-content-right-text">{{ performance.response }}</span></li>
+              <span :style="{ backgroundColor: colorList[3] }" class="blogInfo-content-right-text">{{ performance.response }}</span></li>
             <li>
               <div class="blogInfo-content-left-text">
                 <Icon color="var(--c-text-666)" size="12">
                   <CalendarOutline></CalendarOutline>
                 </Icon>
                 <span>博客已运行</span></div>
-              <span class="blogInfo-content-right-text">{{ formateDate }}</span></li>
+              <span :style="{ backgroundColor: colorList[4] }" class="blogInfo-content-right-text">{{ formateDate }}</span></li>
           </ul>
         </div>
       </div>
@@ -117,8 +119,8 @@ import {
   PersonOutline,
   CalendarOutline
 } from '@vicons/ionicons5'
-import {Icon} from "@vicons/utils/lib";
-import {NDivider} from 'naive-ui'
+import {Icon} from "@vicons/utils";
+import {NDivider, NIcon} from 'naive-ui'
 import {onMounted, reactive, ref, watch, watchEffect, computed} from 'vue'
 import useArticle from "@/stores/useArticle";
 import {useRoute} from "vue-router";
@@ -126,17 +128,27 @@ import usePaging from "@/stores/usePaging";
 import {imgUrlList} from "@/layouts/BasicLayout/components/index";
 import {useRouter} from "vue-router";
 import useUser from "@/stores/useUser";
+import {useDark} from '@vueuse/core'
 
 type P = {
   TakeUp: string | null,
   TimeOut: string | null,
   response: string | null,
 }
+const isDark = useDark()
 const userStore = useUser()
 const router = useRouter()
 const pagingStore = usePaging()
 const route = useRoute()
 const articleStore = useArticle()
+
+// 针对亮色和暗色模式提供两套不同的配色
+const colorList = computed(() => {
+  return isDark.value 
+    ? ['#c05b5b', '#4c8da1', '#518c5d', '#a87f4a', '#6c62a3'] // 暗色模式：低饱和度莫兰迪色
+    : ['#F05050', '#23B7E5', '#27C24C', '#FF9800', '#7266BA'] // 亮色模式：高亮色
+})
+
 const RightTitle = ref('热门文章')
 const nowPage = ref<string>('newArticle-page')
 const getNewPage = (key) => {
@@ -149,16 +161,25 @@ const performance = reactive<P>({
   response: null
 })
 watchEffect(() => {
+  const list = articleStore.specifyList.list
+  if (!list) {
+    recommendList.list = []
+    return
+  }
+  
   switch (nowPage.value) {
     case 'newArticle-page':
-      recommendList.list = articleStore.specifyList.list.newArticleList
-      return RightTitle.value = '最新文章'
+      recommendList.list = list.newArticleList || []
+      RightTitle.value = '最新文章'
+      break
     case 'mostViewed-page':
-      recommendList.list = articleStore.specifyList.list.mostViewedList
-      return RightTitle.value = '最多浏览'
+      recommendList.list = list.mostViewedList || []
+      RightTitle.value = '最多浏览'
+      break
     case 'recommend-page':
-      recommendList.list = articleStore.specifyList.list.randomdList
-      return RightTitle.value = '文章推荐'
+      recommendList.list = list.randomdList || []
+      RightTitle.value = '文章推荐'
+      break
   }
 })
 
@@ -276,10 +297,11 @@ onMounted(() => {
       }
 
       .blogInfo-content-right-text {
-        padding: 0 10px;
-        background: var(--c-info-bg);
+        padding: 2px 10px;
         border-radius: 5px;
-        color: var(--c-info-text);
+        color: #fff !important;
+        font-weight: bold;
+        transition: background-color 0.5s ease;
       }
     }
   }
@@ -367,8 +389,23 @@ onMounted(() => {
   }
 
   .recommend {
-    min-height: 220px;
+    min-height: 350px;
     padding: 20px 5px;
+
+    .list-fade-enter-active,
+    .list-fade-leave-active {
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .list-fade-enter-from {
+      opacity: 0;
+      transform: translateX(5px);
+    }
+    
+    .list-fade-leave-to {
+      opacity: 0;
+      transform: translateX(-5px);
+    }
 
     .rightTitle {
       padding: 0 15px;

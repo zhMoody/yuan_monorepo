@@ -61,10 +61,10 @@ const errorHandler = (error: AxiosError) => {
 
 request.interceptors.request.use((config) => {
   const userStore = useUserStore()
-  let token = userStore.userInfo.token
-  // 如果 token 存在
-  // 让每个请求携带自定义 token 请根据实际情况自行修改
-  config.headers.Authorization = `bearer ${token}`;
+  let token = userStore.userInfo?.token
+  if (token) {
+    config.headers.Authorization = `bearer ${token}`;
+  }
   return config;
 }, errorHandler);
 

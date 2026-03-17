@@ -21,26 +21,26 @@
             <div class="title">{{ item.title }}</div>
             <div>
               <div class="divider">
-                <n-divider/>
+                <NDivider/>
               </div>
               <div class="info">
                 <!--            HappyOutline-->
                 <div class="name">
-                  <Icon size="16">
+                  <NIcon size="16">
                     <PersonOutline></PersonOutline>
-                  </Icon>
+                  </NIcon>
                   {{ item.author }}
                 </div>
                 <div class="time">
-                  <Icon size="16">
+                  <NIcon size="16">
                     <TimeOutline></TimeOutline>
-                  </Icon>
+                  </NIcon>
                   {{ formatTime(item.created) }}
                 </div>
                 <div class="see">
-                  <Icon size="16">
+                  <NIcon size="16">
                     <EyeOutline></EyeOutline>
-                  </Icon>
+                  </NIcon>
                   {{ item.browse }}
                 </div>
               </div>
@@ -53,7 +53,7 @@
 
 </template>
 <script lang='ts' setup>
-import {NEmpty, NDivider} from 'naive-ui'
+import {NEmpty, NDivider, NIcon} from 'naive-ui'
 import {PersonOutline, TimeOutline, EyeOutline} from '@vicons/ionicons5'
 import {Icon} from "@vicons/utils/lib";
 import {onMounted, reactive, ref, computed, watch} from 'vue';
@@ -75,7 +75,6 @@ const gotoDetail = (id) => {
 const formatTime = computed((item) => () => {
   return dayjs(item).format('YYYY-MM-DD')
 })
-console.log()
 watch(() => route.query.id, async (val) => {
   if (val) {
     const res = await getCategroyItem(val)

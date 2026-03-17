@@ -1,48 +1,47 @@
 <template>
   <header id="header" class="header">
     <div class="default" @click="router.push('/')">
-      <Icon color="var(--c-text-666)" size='24'>
-        <Home tag="span"/>
-      </Icon>
-      <span style="padding-left: 10px;color: var(--c-text-666)"> {{ store.userInfo.blogTitle }}</span>
-      <!--      <img :src="store.userInfo.blogLogo " alt="" class="img">-->
+      <n-icon color="var(--c-text-666)" size='24'>
+        <Home />
+      </n-icon>
+      <span style="padding-left: 10px;color: var(--c-text-666)"> {{ store.userInfo?.blogTitle }}</span>
     </div>
     <div class="onMobile" @click="showMenu">
-      <Icon color="var(--c-text-666)" size='24'>
-        <Home tag="span"/>
-      </Icon>
+      <n-icon color="var(--c-text-666)" size='24'>
+        <Home />
+      </n-icon>
     </div>
     <div class="blog-center">
       <div class="blog-center-search">
         <div class="search">
           <input class="ipt" placeholder="输入关键字搜索。。。" type="text">
           <button class="btn">
-            <Icon color="#666" size='16'>
-              <Search tag="span"></Search>
-            </Icon>
+            <n-icon color="#666" size='16'>
+              <Search />
+            </n-icon>
           </button>
         </div>
       </div>
     </div>
     <div class="blog-right">
-      <MusicPlayer class="musicBox"></MusicPlayer>
+      <MusicPlayer />
       <div class="login-container" @click.stop="showBox">
-        <Icon v-if="!store.userInfo.token" color="#777" size="24" @click="showBox">
-          <PersonCircleOutline></PersonCircleOutline>
-        </Icon>
+        <n-icon v-if="!store.userInfo?.token" color="#777" size="24" @click="showBox">
+          <PersonCircleOutline />
+        </n-icon>
         <span style="margin-right: 5px;font-size: 16px;color: var(--c-text-666)" @click.stop="showBox">{{
-            store.userInfo.nickname
+            store.userInfo?.nickname
           }}</span>
-        <Icon color="var(--c-text-666)" size="12" @click="showBox">
-          <CaretDown tag="span"></CaretDown>
-        </Icon>
+        <n-icon color="var(--c-text-666)" size="12" @click="showBox">
+          <CaretDown />
+        </n-icon>
         <div class="avatar">
-          <NAvatar v-if="store.userInfo.token" :size="40" :src="store.userInfo.avatar" bordered
+          <NAvatar v-if="store.userInfo?.token" :size="40" :src="store.userInfo?.avatar" bordered
                    fallback-src="https://s1.ax1x.com/2020/07/25/UzAaMq.jpg" round @click="showBox"/>
-          <span v-if="store.userInfo.token" class="spa"></span>
+          <span v-if="store.userInfo?.token" class="spa"></span>
         </div>
         <div class="login-posa">
-          <n-form v-if="!store.userInfo.token" ref="formRef" :model="formValue" @click.stop>
+          <n-form v-if="!store.userInfo?.token" ref="formRef" :model="formValue" @click.stop>
             <n-form-item class="ipt" label="用户名" label-style="color:var(--c-text-666)">
               <n-input v-model:value="formValue.nickname" placeholder="用户名"/>
             </n-form-item>
@@ -54,7 +53,7 @@
             </n-button>
           </n-form>
           <div @click.stop>
-            <div v-if="store.userInfo.token" class="isLoginBox" @click.self="logoutBlog">
+            <div v-if="store.userInfo?.token" class="isLoginBox" @click.self="logoutBlog">
               <div class="helloTitle">{{ getDate() }}</div>
               <div class="LoginOptions" @click.stop="handleRouter('addArticle')">
                 <div class="onNew">
@@ -64,13 +63,13 @@
                   <span>撰写文章</span>
                 </div>
                 <Icon color="var(--c-text-666)" size="12">
-                  <CaretForward tag="span"></CaretForward>
+                  <CaretForward></CaretForward>
                 </Icon>
               </div>
               <div class="LoginOptions" @click.stop="handleRouter('backStageManagement')">
                 <div class="onNew">
                   <Icon color="var(--c-text-666)" size="14">
-                    <SettingsOutline tag="span"></SettingsOutline>
+                    <SettingsOutline></SettingsOutline>
                   </Icon>
                   <span>后台管理</span>
                 </div>
@@ -100,7 +99,7 @@ import {
 } from '@vicons/ionicons5';
 import {Icon} from '@vicons/utils';
 import {FormInst, NAvatar, NButton, NDivider, NForm, NFormItem, NInput, useMessage, useNotification} from 'naive-ui';
-import {onMounted, ref} from "vue";
+import {onMounted, onUnmounted, ref, nextTick} from "vue";
 import {useRouter} from "vue-router";
 import WOW from "wow.js";
 
@@ -138,7 +137,15 @@ const handleValidateClick = async () => {
       duration: 2000,
     })
   } else {
-    store.login(formValue.value)
+    try {
+      await store.login(formValue.value)
+    } catch (err: any) {
+      notification.error({
+        title: '登录提示',
+        content: err.toString() || '登录失败，请检查网络或用户名密码',
+        duration: 2000
+      })
+    }
   }
 }
 const onHeight = ref('0')
@@ -197,32 +204,44 @@ const handleRouter = (path) => {
 //   op.value = 0
 // }
 
-onMounted(() => {
+let resizeTimer: any = null;
+const handleResize = () => {
+  if (resizeTimer) clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    show.setMenuWidth(width);
+    screenWidth.value = width;
+  }, 200);
+};
+
+let wow: any = null;
+
+onMounted(async () => {
   document.documentElement.addEventListener('click', (e: MouseEvent) => {
-    e.stopPropagation()
     isShowLoginInputBox.value = false
     onHeight.value = '0'
     op.value = 0
     onPadding.value = '0'
   })
-  window.onresize = () => {
-    return (() => {
-      show.setMenuWidth(window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth)
-      screenWidth.value = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
-    })()
-  }
-  let wow = new WOW({
+  window.addEventListener('resize', handleResize);
+  
+  await nextTick();
+  wow = new WOW({
     boxClass: "wow",
     animateClass: "animated",
     offset: 0,
     mobile: true,
-    live: true,
-    callback: function (box) {
-    },
-    scrollContainer: null,
+    live: false,
     resetAnimation: true,
   })
   wow.init()
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize);
+  if (wow && wow.stop) {
+    wow.stop();
+  }
 })
 </script>
 

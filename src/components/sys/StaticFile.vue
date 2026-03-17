@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import useDevice from '@/hooks/useDevice';
 import { baseStaticUrl } from '@/libs/utils';
-import { computed, onMounted, ref, Ref, watch, withDefaults } from 'vue';
+import { computed, onMounted, ref, Ref, watch } from 'vue';
 
 interface Props {
   src?: string;

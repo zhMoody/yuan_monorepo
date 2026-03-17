@@ -6,7 +6,6 @@
 </template>
 
 <script setup lang="ts">
-import { withDefaults } from 'vue';
 interface Props {
   width?: string;
   height?: string;

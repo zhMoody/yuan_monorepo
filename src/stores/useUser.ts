@@ -1,5 +1,4 @@
 import {getConfigInfo, getUserInfo, onLogin} from "@/api";
-import {useNotification} from 'naive-ui';
 import {defineStore} from 'pinia';
 import storage from "store";
 import {nextTick, ref} from "vue";
@@ -27,7 +26,6 @@ const defaultUserInfo = {
 };
 export default defineStore('useUserStore', () => {
   const userInfo = ref<UserInfo>(defaultUserInfo)
-  const notification = useNotification()
   const login = async (payload) => {
     try {
       let data = payload
@@ -37,27 +35,24 @@ export default defineStore('useUserStore', () => {
       userInfo.value = {...userInfo.value, id: userinfo.data._id, ...userinfo.data}
       delete userInfo.value._id
     } catch (err: any) {
-      notification.error({
-        title: '登录提示',
-        content: err,
-        duration: 2000
-      })
+      throw err
     }
   }
 
   const getUserConfigInfo = async () => {
-    const res = await getConfigInfo()
     try {
-      // @ts-ignore
-      delete res.data.result._id
-      // @ts-ignore
-      delete res.data.result.id
-      userInfo.value = {...userInfo.value, ...res.data.result}
-      userInfo.value.onfile = res.data.onfile
+      const res = await getConfigInfo()
+      if (res && res.data && res.data.result) {
+        // @ts-ignore
+        delete res.data.result._id
+        // @ts-ignore
+        delete res.data.result.id
+        userInfo.value = {...(userInfo.value || {}), ...res.data.result}
+        userInfo.value.onfile = res.data.onfile
+      }
     } catch (err) {
-
+      console.error('获取配置信息失败', err)
     }
-
   }
 
   const logout = () => {

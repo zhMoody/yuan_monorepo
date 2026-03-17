@@ -4,15 +4,15 @@
       <div class="userAvatar">
         <n-avatar
           :size="100"
-          :src="store.userInfo.baseAvatarUrl"
+          :src="store.userInfo?.baseAvatarUrl"
           bordered
           round
         />
       </div>
       <div class="introduction">
-        <span style="margin-right: 5px;font-size: 16px;color:var(--c-text-666)">{{ store.userInfo.userName }}</span>
+        <span style="margin-right: 5px;font-size: 16px;color:var(--c-text-666)">{{ store.userInfo?.userName }}</span>
         <Icon color="#666" size="12">
-          <CaretDown tag="span"></CaretDown>
+          <CaretDown></CaretDown>
         </Icon>
       </div>
       <div style="height: 50px">
@@ -69,15 +69,32 @@ import useUserStore from "@/stores/useUser";
 import {CaretDown} from '@vicons/ionicons5'
 import {Icon} from '@vicons/utils'
 import {useDynamicText} from "@/hooks/useDynamicText";
-import {ref, onMounted, reactive, nextTick} from "vue";
+import {ref, onMounted, onUnmounted, reactive, watch} from "vue";
 import {useRouter} from "vue-router";
 import {getCategroy} from "@/api/article";
 
 const router = useRouter()
 const store = useUserStore()
 const signature = ref<HTMLDivElement>()
+let stopDynamicText: any = null
+
+const initDynamicText = () => {
+  if (store.userInfo && signature.value) {
+    if (stopDynamicText) stopDynamicText()
+    stopDynamicText = useDynamicText(signature.value, store.userInfo.userIntro)
+  }
+}
+
+watch(() => store.userInfo, () => {
+  initDynamicText()
+}, { immediate: true })
+
 onMounted(() => {
-  useDynamicText(signature.value, store.userInfo.userIntro)
+  initDynamicText()
+})
+
+onUnmounted(() => {
+  if (stopDynamicText) stopDynamicText()
 })
 
 const navItemList = reactive([
@@ -226,16 +243,26 @@ const showSubItem = (item, ind) => {
   item.isSubShow = !item.isSubShow;
 }
 const getCategroyData = async () => {
-  const res = await getCategroy()
-  navItemList[0].subItems = res.data.result.map((item) => {
-    return {
-      name: item.name,
-      path: `/categroy?id=${item._id}&name=${item.name}`,
-      id: item._id
+  try {
+    const res = await getCategroy()
+    if (res && res.data && res.data.result) {
+      navItemList[0].subItems = res.data.result.map((item) => {
+        return {
+          name: item.name,
+          path: `/categroy?id=${item._id}&name=${item.name}`,
+          id: item._id
+        }
+      })
     }
-  })
+  } catch (err) {
+    console.error('Failed to fetch categories:', err)
+  }
 }
-getCategroyData()
+
+onMounted(() => {
+  initDynamicText()
+  getCategroyData()
+})
 
 </script>
 <style lang="less" scoped>
