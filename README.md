@@ -24,6 +24,18 @@
         下载bcrypt时，下载容易失败，npm i node-gyp -g 全局安装  下载比较慢
     jsonwebtoken JSON WEB令牌实现
 
+## 常用指令
+
+- `npm run dev`：使用 nodemon 在开发模式下启动。
+- `npm run build`：生产环境打包，自动清理旧目录并对源码进行混淆处理，输出到 `dist` 目录。
+- `npm run start`：生产环境下直接运行入口文件。
+
+### Linux 生产环境推荐指令 (PM2)
+若已安装 PM2，可以使用以下指令实现后台持久运行：
+- `npm run pm2:start`：以后台服务模式启动。
+- `npm run pm2:stop`：停止后台服务。
+- `npm run pm2:log`：查看实时运行日志。
+
 ## 快速启动 (一键部署方案)
 
 本项目提供了两种一键启动和自动部署后端环境（包含数据库）的方案，数据库数据默认会存储在项目同级的 `../mongodb-data` 目录中。
