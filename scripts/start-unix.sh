@@ -18,7 +18,7 @@ STARTED_BY_SCRIPT=false
 
 # 1. Check if port 27017 is already active
 if nc -z 127.0.0.1 $PORT 2>&1 >/dev/null; then
-    echo -e "${GREEN}[√] MongoDB port $PORT is already active. Using existing service.${NC}"
+    echo -e "${GREEN}[√] MongoDB port $PORT is already active.${NC}"
 else
     echo -e "${YELLOW}[!] Port $PORT is not responding. Looking for solutions...${NC}"
 
@@ -36,30 +36,38 @@ else
         docker-compose up -d mongodb
         STARTED_BY_SCRIPT=true
         sleep 5
-    # 4. Auto-install
+    # 4. Auto-install (Optimized for modern Linux)
     else
         echo -e "${YELLOW}[!] No MongoDB or Docker found. Attempting auto-install...${NC}"
         OS_TYPE="$(uname)"
         if [ "$OS_TYPE" == "Darwin" ]; then
             if ! command -v brew &> /dev/null; then
-                echo -e "${RED}[X] Cannot auto-install. Please install Homebrew or Docker first.${NC}"
+                echo -e "${RED}[X] Please install Homebrew or Docker first.${NC}"
                 exit 1
             fi
-            echo -e "${CYAN}[*] Installing MongoDB via Homebrew...${NC}"
             brew tap mongodb/brew && brew install mongodb-community
-            mkdir -p "$DB_PATH"
-            mongod --dbpath "$DB_PATH" --port $PORT --fork --logpath "$DB_PATH/mongodb.log"
-            STARTED_BY_SCRIPT=true
-        elif [ "$OS_TYPE" == "Linux" ] && command -v apt-get &> /dev/null; then
-            echo -e "${CYAN}[*] Installing MongoDB via apt-get...${NC}"
-            sudo apt-get update && sudo apt-get install -y mongodb
-            mkdir -p "$DB_PATH"
-            mongod --dbpath "$DB_PATH" --port $PORT --fork --logpath "$DB_PATH/mongodb.log"
-            STARTED_BY_SCRIPT=true
-        else
-            echo -e "${RED}[X] Auto-install failed. Please manually install MongoDB or Docker.${NC}"
-            exit 1
+        elif [ "$OS_TYPE" == "Linux" ]; then
+            # Ubuntu/Debian official repo setup
+            if command -v apt-get &> /dev/null; then
+                echo -e "${CYAN}[*] Configuring MongoDB Official Repository...${NC}"
+                sudo apt-get install -y gnupg curl
+                curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | \
+                   sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg \
+                   --dearmor --yes
+                echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+                sudo apt-get update
+                sudo apt-get install -y mongodb-org
+            else
+                echo -e "${RED}[X] Unsupported Linux distro. Please install MongoDB manually.${NC}"
+                exit 1
+            fi
         fi
+        
+        # Start after install
+        mkdir -p "$DB_PATH"
+        mongod --dbpath "$DB_PATH" --port $PORT --fork --logpath "$DB_PATH/mongodb.log"
+        STARTED_BY_SCRIPT=true
+        sleep 3
     fi
 fi
 
