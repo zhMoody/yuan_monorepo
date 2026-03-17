@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon app.js",
+    "dev:win": "powershell -ExecutionPolicy Bypass -File ./scripts/start-windows.ps1",
+    "dev:unix": "chmod +x ./scripts/start-unix.sh && ./scripts/start-unix.sh"
   },
   "dependencies": {
     "@koa/router": "^10.1.1",

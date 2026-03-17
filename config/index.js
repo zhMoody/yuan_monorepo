@@ -5,11 +5,11 @@ module.exports = {
   // mongodb数据库相关配置
   db: {
     // 数据库的端口  mongodb默认就是27017
-    port: 27017,
-    // 数据库的地址，本地地址是127.0.0.1 数据库开启认证 yuanblog:Aa123456
-    host: "yuanblog:Aa123456@127.0.0.1",
+    port: process.env.DB_PORT || 27017,
+    // 数据库的地址，支持从环境变量读取，默认为本地
+    host: process.env.DB_HOST || "127.0.0.1",
     // 数据库名称，没有会自动创建
-    dbName: "yuanblog",
+    dbName: process.env.DB_NAME || "yuanblog",
   },
   // 签证配置
   security: {

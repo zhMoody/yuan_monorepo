@@ -30,6 +30,18 @@ const catchError = async (ctx, next) => {
       };
       return;
     }
+
+    // 处理 Mongoose 的 CastError (ObjectId 转换失败等)
+    if (error.name === 'CastError') {
+      ctx.status = 400;
+      ctx.body = {
+        errorMessage: `参数类型错误: ${error.path}`,
+        error_code: 10001,
+        request: `${ctx.method} ${ctx.path}`,
+      };
+      return;
+    }
+
     // 判断当前错误是否为Http请求错误
     const isHttpException = error instanceof HttpException;
     console.log(error)
