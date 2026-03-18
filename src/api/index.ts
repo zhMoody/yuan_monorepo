@@ -1,11 +1,22 @@
 import request from '@/libs/request';
-// import request from '@/libs/userRequest';
+import { encrypt } from '@/libs/utils/crypto';
 
-export const onLogin = (data) => request<any>({
-  method: 'POST',
-  url: '/admin/login',
-  data
-});
+export const onLogin = async (data) => {
+  // 创建副本，避免修改原始响应式对象导致 UI 上的输入框内容变化
+  const requestData = { ...data };
+
+  if (requestData.password) {
+    const encrypted = await encrypt(requestData.password);
+    if (encrypted) {
+      requestData.password = encrypted;
+    }
+  }
+  return request<any>({
+    method: 'POST',
+    url: '/admin/login',
+    data: requestData
+  });
+};
 // 获取登录角色info
 export const getUserInfo = () => request<any>({
   method: 'GET',

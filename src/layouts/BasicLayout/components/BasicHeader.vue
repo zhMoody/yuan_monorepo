@@ -26,12 +26,12 @@
     <div class="blog-right">
       <MusicPlayer />
       <div class="login-container" @click.stop="showBox">
-        <n-icon v-if="!store.userInfo?.token" color="#777" size="24" @click="showBox">
-          <PersonCircleOutline />
-        </n-icon>
-        <span style="margin-right: 5px;font-size: 16px;color: var(--c-text-666)" @click.stop="showBox">{{
-            store.userInfo?.nickname
-          }}</span>
+        <Icon v-if="!store.userInfo?.token || store.userInfo?.token === ''" class="admin-icon-fix" size="22">
+          <SettingsOutline />
+        </Icon>
+        <span v-if="store.userInfo?.token" style="margin-right: 5px;font-size: 16px;color: var(--c-text-666)" @click.stop="showBox">
+          {{ store.userInfo?.nickname }}
+        </span>
         <n-icon color="var(--c-text-666)" size="12" @click="showBox">
           <CaretDown />
         </n-icon>
@@ -99,9 +99,8 @@ import {
 } from '@vicons/ionicons5';
 import {Icon} from '@vicons/utils';
 import {FormInst, NAvatar, NButton, NDivider, NForm, NFormItem, NInput, useMessage, useNotification} from 'naive-ui';
-import {onMounted, onUnmounted, ref, nextTick} from "vue";
+import {onMounted, onUnmounted, ref} from "vue";
 import {useRouter} from "vue-router";
-import WOW from "wow.js";
 
 
 const store = useUserStore()
@@ -114,7 +113,7 @@ const isShowLoginInputBox = ref<boolean>(false)
 const screenWidth = ref<any>(window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth)
 const formValue = ref<{ nickname: string, password: string }>({
   nickname: 'admin',
-  password: 'Aa2597758'
+  password: ''
 })
 
 const logoutBlog = () => {
@@ -224,26 +223,11 @@ onMounted(async () => {
     onPadding.value = '0'
   })
   window.addEventListener('resize', handleResize);
-  
-  await nextTick();
-  wow = new WOW({
-    boxClass: "wow",
-    animateClass: "animated",
-    offset: 0,
-    mobile: true,
-    live: false,
-    resetAnimation: true,
-  })
-  wow.init()
 })
 
 onUnmounted(() => {
   window.removeEventListener('resize', handleResize);
-  if (wow && wow.stop) {
-    wow.stop();
-  }
-})
-</script>
+})</script>
 
 <style lang="less" scoped>
 :deep(.n-form-item .n-form-item-feedback-wrapper) {
@@ -367,6 +351,10 @@ onUnmounted(() => {
       padding: 0 15px;
       user-select: none;
 
+      .admin-icon-fix {
+        color: var(--c-text-666);
+      }
+
       .avatar {
         margin-left: 5px;
         transition: all 1s;
@@ -475,9 +463,22 @@ onUnmounted(() => {
 
       &:hover {
         background-color: rgba(0, 0, 0, .05);
+
+        .admin-icon-fix {
+          animation: adminIconRotation 2s infinite linear;
+        }
       }
     }
 
+  }
+}
+
+@keyframes adminIconRotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 
