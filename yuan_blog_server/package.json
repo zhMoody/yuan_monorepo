@@ -3,8 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js",
     "dev:win": "powershell -ExecutionPolicy Bypass -File ./scripts/start-windows.ps1",
     "dev:unix": "bash ./scripts/start-unix.sh",
     "pm2:start": "pm2 start dist/app.js --name yuan-blog-server",

@@ -4,11 +4,10 @@
   "private": true,
   "description": "Monorepo for yuan_blog and yuan_blog_server",
   "scripts": {
-    "blog:dev": "pnpm --filter yuan_blog dev",
-    "blog:build": "pnpm --filter yuan_blog build",
-    "server:dev": "npm --prefix yuan_blog_server run dev",
+    "server:dev": "npm --prefix yuan_blog_server run dev:win",
     "server:start": "npm --prefix yuan_blog_server start",
-    "install:all": "pnpm install && cd yuan_blog_server && npm install",
+    "install:blog": " cd yuan_blog && pnpm install",
+    "install:blog-server": "cd yuan_blog_server && pnpm install",
     "pack": "node pack.js"
   },
   "devDependencies": {
