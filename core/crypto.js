@@ -2,8 +2,8 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 
-// 读取私钥
-const privateKey = fs.readFileSync(path.join(__dirname, '../config/private_key.pem'), 'utf8');
+// 读取私钥，相对于项目根目录
+const privateKey = fs.readFileSync(path.join(process.cwd(), 'config/private_key.pem'), 'utf8');
 
 /**
  * RSA 解密

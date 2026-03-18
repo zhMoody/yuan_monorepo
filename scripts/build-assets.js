@@ -19,8 +19,10 @@ function copyFolderSync(from, to) {
 function copyAssets() {
     const assets = [
         'public',
-        'private_key.pem',
+        'config',
         'ca-cert.pem',
+        'private_key.pem',
+        'public_key.pem',
         'package.json'
     ];
 

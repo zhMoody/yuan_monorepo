@@ -9,6 +9,9 @@ const router = new Router();
 
 router.prefix("/admin")
 
+// 获取公钥 (不需要验证)
+router.get("/pubkey", AdminController.getPubKey)
+
 // 注册
 router.post("/register", AdminController.register)
 

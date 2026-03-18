@@ -21,6 +21,9 @@ const cors = require('koa2-cors');
 
 // 引用项目的配置文件
 const config = require("./config");
+// 导入并初始化密钥
+const { initKeys } = require("./core/key-manager");
+initKeys();
 // 导入连接数据库文件
 const db = require("./db");
 // 检查出对应的参数错误、404错误、权限错误、xxx已存在的错误可以这样使用

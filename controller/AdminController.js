@@ -7,8 +7,18 @@ const jwt = require('jsonwebtoken');
 const config = require('../config/index')
 const AdminInfoModel = require('../models/AdminInfoModel')
 const { decrypt } = require('../core/crypto')
+const { getPublicKey } = require('../core/key-manager')
 
 class AdminController {
+  // 获取 RSA 公钥
+  static async getPubKey(ctx, next) {
+    const publicKey = getPublicKey()
+    if (!publicKey) {
+      throw new global.errs.NotFound('公钥未找到')
+    }
+    ctx.body = res.json(publicKey)
+  }
+
   // 注册处理
   static async register(ctx, next) {
     // 解密密码
