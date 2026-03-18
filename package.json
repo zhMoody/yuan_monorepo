@@ -5,10 +5,14 @@
   "author": "Moody",
   "description": "Monorepo for yuan_blog and yuan_blog_server",
   "scripts": {
-    "blog:dev": "npm --prefix yuan_blog run dev",
-    "server:dev": "npm --prefix yuan_blog_server run dev:win",
+    "dev": "concurrently \"pnpm run blog:dev\" \"pnpm run server:dev\"",
+    "blog:dev": "pnpm --prefix yuan_blog run dev",
+    "server:dev": "pnpm --prefix yuan_blog_server run dev:win",
     "install:blog": "cd yuan_blog && pnpm install",
     "install:blog-server": "cd yuan_blog_server && pnpm install",
     "pack": "node pack.js"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }
