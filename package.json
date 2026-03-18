@@ -2,15 +2,13 @@
   "name": "yuan-monorepo",
   "version": "1.0.0",
   "private": true,
+  "author": "Moody",
   "description": "Monorepo for yuan_blog and yuan_blog_server",
   "scripts": {
+    "blog:dev": "npm --prefix yuan_blog run dev",
     "server:dev": "npm --prefix yuan_blog_server run dev:win",
-    "server:start": "npm --prefix yuan_blog_server start",
-    "install:blog": " cd yuan_blog && pnpm install",
+    "install:blog": "cd yuan_blog && pnpm install",
     "install:blog-server": "cd yuan_blog_server && pnpm install",
     "pack": "node pack.js"
-  },
-  "devDependencies": {
-    "pnpm": "^8.0.0"
   }
 }
