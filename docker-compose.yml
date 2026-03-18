@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # MongoDB 数据库
+  mongodb:
+    image: mongo:latest
+    container_name: yuan-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongodb-data:/data/db
+    restart: always
+
+  # 后端服务 (Koa) - 仅限内网访问
+  backend:
+    build: ./yuan_blog_server
+    container_name: yuan-backend
+    environment:
+      - DB_HOST=mongodb
+      - DB_PORT=27017
+      - DB_NAME=yuanblog
+      - PORT=3000
+    depends_on:
+      - mongodb
+    restart: always
+    # 移除了 ports 映射，确保接口不被外网通过 3000 端口访问
+
+  # 前端服务 (Nginx) - 处理 HTTPS 并转发到后端
+  frontend:
+    build:
+      context: ./yuan_blog
+      dockerfile: ./Docker/Dockerfile
+    container_name: yuan-frontend
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - backend
+    restart: always

@@ -1,0 +1,26 @@
+# 依赖与产物
+node_modules/
+dist/
+yuan_deploy_temp/
+yuan_deploy.zip
+
+# 环境变量与密钥 (极其重要)
+.env
+.env.*
+! .env.example
+*.pem
+config/*.pem
+ssl/
+
+# 数据库与运行时数据
+mongodb-data/
+config/
+logs/
+*.log
+
+# 系统与开发工具
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.bak
