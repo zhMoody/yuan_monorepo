@@ -2,6 +2,8 @@ module.exports = {
   host: "http://127.0.0.1",
   // 服务器的端口，写在配置文件中，后面好修改
   port: 3000,
+  // 基础路径，部署时请修改为实际域名或 IP
+  baseUrl: process.env.BASE_URL || "http://localhost:3000",
   // mongodb数据库相关配置
   db: {
     // 数据库的端口  mongodb默认就是27017

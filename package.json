@@ -7,11 +7,11 @@
     "dev": "nodemon app.js",
     "dev:win": "powershell -ExecutionPolicy Bypass -File ./scripts/start-windows.ps1",
     "dev:unix": "bash ./scripts/start-unix.sh",
-    "pm2:start": "pm2 start app.js --name yuan-blog-server",
+    "pm2:start": "pm2 start dist/app.js --name yuan-blog-server",
     "pm2:stop": "pm2 stop yuan-blog-server",
     "pm2:log": "pm2 logs yuan-blog-server",
     "clean": "rimraf dist",
-    "build": "npm run clean && javascript-obfuscator ./ --output ./dist --exclude node_modules,dist,public,scripts,.git --compact true --self-defending true --string-array true"
+    "build": "npm run clean && javascript-obfuscator ./ --output ./dist --exclude node_modules,dist,public,scripts,.git --compact true --self-defending true --string-array true && node scripts/build-assets.js"
   },
   "dependencies": {
     "@koa/router": "^10.1.1",

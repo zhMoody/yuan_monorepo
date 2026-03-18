@@ -15,7 +15,7 @@ const adminSchema = new mongoose.Schema({
   avatar: {
     type: String,
     require: false,
-    default: 'http://localhost:3000/images/1675856851053.gif'
+    default: '/api/images/1675856851053.gif'
   }
 });
 // 3.定义Model(与集合对应,可以操作集合)

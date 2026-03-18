@@ -1,5 +1,7 @@
 const Koa = require("koa");
 const app = new Koa();
+// node内置path
+const path = require("path");
 //node内置https server
 const https = require('https');
 //node内置fs
@@ -60,7 +62,7 @@ app
   .use(json())
   .use(logger())
   .use(cors())
-  .use(static(__dirname + '/public'))
+  .use(static(path.join(__dirname, 'public')))
 
 // 日志打印中间件
 app.use(async (ctx, next) => {
@@ -112,14 +114,7 @@ app.on("error", function (err, ctx) {
   // logger.error('server error', err, ctx)
 });
 
-// 开启https
-// var options = {
-//   key: fs.readFileSync('./private_key.pem'),  //私钥文件路径
-//   cert: fs.readFileSync('./ca-cert.pem')  //证书文件路径
-// };
-// module.exports = https.createServer(options, app.callback()).listen(port, () => {
-//   console.log(`server running success at : http://localhost:${port}`)
-// });
+// 开启 http 服务 (由 Nginx 统一处理 HTTPS)
 module.exports = app.listen(port, () => {
-  console.log(`Server is running on: http://localhost:${port}`);
+  console.log(`server running success at : http://localhost:${port}`)
 });

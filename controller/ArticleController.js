@@ -76,11 +76,11 @@ class ArticleController {
   //文章封面上传
   static async uploadCoverImg(ctx, next) {
     const _id = ctx.params._id
-    let filepath = ctx.req.file.destination.replace(/^public\//, '') + ctx.req.file.filename
-    let imagePath = config.host + ':' + config.port + '/' + filepath
-    await ArticleModel.findByIdAndUpdate({ _id }, { cover: imagePath })
+    // 拼接成 /api/images/xxx.png，这样 Nginx 就可以通过 proxy_pass 代理到后端
+    let filepath = '/api/' + ctx.req.file.destination.replace(/^public\//, '') + ctx.req.file.filename
+    await ArticleModel.findByIdAndUpdate({ _id }, { cover: filepath })
     ctx.body = res.json({
-      filePath: imagePath
+      filePath: filepath
     })
   }
 

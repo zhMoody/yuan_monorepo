@@ -6,12 +6,19 @@ const bcrypt = require('../core/bcrypt')
 const jwt = require('jsonwebtoken');
 const config = require('../config/index')
 const AdminInfoModel = require('../models/AdminInfoModel')
+const { decrypt } = require('../core/crypto')
+
 class AdminController {
   // 注册处理
   static async register(ctx, next) {
+    // 解密密码
+    if (ctx.request.body.password) ctx.request.body.password = decrypt(ctx.request.body.password)
+    if (ctx.request.body.password2) ctx.request.body.password2 = decrypt(ctx.request.body.password2)
+
     //验证字段
     registerValidator(ctx)
     let { nickname, password2 } = ctx.request.body
+
     // 检查数据库中有没有重复用户名
     let currentUser = await AdminModel.findOne({ nickname })
     if (currentUser) {
@@ -28,6 +35,14 @@ class AdminController {
   }
   // 登录处理 
   static async login(ctx, next) {
+    // 解密密码
+    if (ctx.request.body.password) {
+      ctx.request.body.password = decrypt(ctx.request.body.password)
+    }
+    
+    // 如果有验证逻辑则调用
+    // loginValidator(ctx) 
+
     let { nickname, password } = ctx.request.body
     let user = await LoginManager.adminLogin(nickname, password)
     ctx.body = res.json(user)
