@@ -1,96 +1,173 @@
-# Yuan - 高性能全栈内容管理系统
+## 开始
 
-Yuan 是一个基于 **Vue 3 (Vite + TS)** 和 **Koa 2 (Node.js)** 构建的全栈系统。项目采用前后端分离架构，通过容器化技术（Docker）实现安全、稳定、极速的部署。
+- node > 14
 
----
-
-## 🚀 快速开始
-
-### 1. 本地开发环境
-- **前端**: 进入 `yuan` 目录，执行 `pnpm install` -> `pnpm run dev`。
-- **后端**: 进入 `yuan-server` 目录，执行 `npm install` -> `npm run dev`。
-- **数据库**: 确保本地运行 MongoDB（27017 端口）。
-
-### 2. 打包部署包 (生产环境分发)
-在项目根目录运行以下命令，将自动完成前后端编译、代码混淆、运维脚本生成并打包：
-```bash
-node pack.js
-```
-执行完毕后，根目录会生成 `yuan_deploy.zip`。
-
----
-
-## 🛠️ 部署与更新流程
-
-### 首次部署
-**Linux**: 进入解压后的目录执行 `bash start.sh`。
-   - 脚本会自动检查 Docker 环境，若缺失则尝试自动安装。
-   - 自动生成自签名 SSL 证书。
-   - 动态生成 RSA 安全密钥对。
-
-### 后续更新 (如何发布新功能)
-当您修改了前端或后端代码需要更新到服务器时：
-1. **本地**: 重新运行 `node pack.js` 生成新的 `yuan_deploy.zip`。
-2. **上传**: 将新压缩包上传至服务器覆盖旧文件。
-3. **解压**: `unzip -o yuan_deploy.zip` 强制覆盖原有代码,保留数据。
-4. **执行**: 再次进入目录运行 `bash start.sh` (Linux)。
-   - Docker 会检测镜像变化并自动执行增量构建。
-   - **注意**: 重新部署不会丢失数据库数据（存放在 `mongodb-data/`）和安全密钥（存放在 `config/`）。
-
----
-
-## 🐳 Docker 常用运维命令
-
-部署成功后，您可以使用以下命令管理服务(在解压目录下)：
-
-### 1. 查看运行状态
-```bash
-# 查看所有容器是否正常运行 (Up 状态)
-docker ps
-
-# 查看容器资源占用 (CPU/内存)
-docker stats
+```js
+ pnpm
+install
 ```
 
-### 2. 查看日志 (排查问题核心命令)
-```bash
-# 查看所有服务的实时合并日志
-docker compose logs -f
+## 使用技术栈
 
-# 仅查看后端接口日志
-docker compose logs -f backend
+- vue3
+- Typescript
+- Pinia
+- vue-route4
+- pinia-plugin-persistedstate pinia持久化
+- 动画库
+  - nprogress 进度条
+  - wow.js js动画
+  - animate.css css动画
+- store localstorage本地存储
+- axios 请求
+- vue3-lazy 图片懒加载
 
-# 仅查看前端 Nginx 日志
-docker compose logs -f frontend
+- @vicons/ionicons5 icon图标
+- md-editor-v3 md文档编辑器
+
+
+- package.json
+
+```json
+
+{
+  "name": "vue3tstemplate",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --mode development",
+    "build": "vite build --mode production",
+    "preview": "vite preview --port 3222"
+  },
+  "dependencies": {
+    "animate.css": "^4.1.1",
+    "axios": "0.21.1",
+    "current-device": "0.10.2",
+    "dayjs": "^1.11.7",
+    "lodash": "4.17.21",
+    "md-editor-v3": "2.8.0",
+    "mitt": "2.1.0",
+    "nprogress": "0.2.0",
+    "pinia": "^2.0.23",
+    "pinia-plugin-persistedstate": "^3.0.2",
+    "screenfull": "5.1.0",
+    "store": "2.0.12",
+    "ua-parser-js": "0.7.28",
+    "vue": "^3.2.41",
+    "vue-router": "4.0.11",
+    "vue3-lazy": "1.0.0-alpha.1",
+    "wow.js": "^1.2.2"
+  },
+  "devDependencies": {
+    "@sicons/ionicons5": "^0.12.0",
+    "@types/node": "^18.11.7",
+    "@types/nprogress": "^0.2.0",
+    "@types/store": "^2.0.2",
+    "@types/ua-parser-js": "^0.7.36",
+    "@typescript-eslint/eslint-plugin": "^5.41.0",
+    "@typescript-eslint/parser": "^5.41.0",
+    "@vicons/ionicons5": "^0.12.0",
+    "@vicons/utils": "^0.1.4",
+    "@vitejs/plugin-vue": "^3.2.0",
+    "autoprefixer": "^10.4.13",
+    "eslint": "^8.26.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-define-config": "^1.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-vue": "^9.6.0",
+    "less": "^4.1.3",
+    "less-loader": "^11.1.0",
+    "naive-ui": "^2.34.3",
+    "postcss": "^8.4.18",
+    "postcss-cli": "^10.0.0",
+    "postcss-import": "^15.0.0",
+    "postcss-pxtorem": "^6.0.0",
+    "prettier": "^2.7.1",
+    "stylelint": "^14.14.0",
+    "stylelint-config-prettier": "^9.0.3",
+    "stylelint-config-recess-order": "^3.0.0",
+    "stylelint-config-standard": "^29.0.0",
+    "typescript": "^4.6.4",
+    "vfonts": "^0.0.3",
+    "vite": "^3.2.0",
+    "vite-plugin-compression": "^0.3.5",
+    "vite-plugin-svg-icons": "^2.0.1",
+    "vue-tsc": "^1.0.9"
+  }
+}
+
 ```
 
-### 3. 重启与停止
-```bash
-# 重启所有服务
-docker compose restart
+- vite-config.ts
 
-# 停止并移除容器 (数据不会丢失，因为已挂载 Volumes)
-docker compose down
+```js
+import vue from '@vitejs/plugin-vue';
+import autoprefixer from 'autoprefixer';
+import {resolve} from "path";
+import postcssImport from "postcss-import";
+import {defineConfig, loadEnv} from 'vite';
+import viteCompression from 'vite-plugin-compression';
+import {createSvgIconsPlugin} from 'vite-plugin-svg-icons';
 
-# 启动已存在的容器
-docker compose up -d
+// https://vitejs.dev/config/
+export default ({mode}) => {
+  return defineConfig({
+    plugins: [
+      vue(),
+      viteCompression(),
+      createSvgIconsPlugin({
+        iconDirs: [resolve(process.cwd(), 'src/assets/icons')],
+        symbolId: 'icon-[dir]-[name]',
+      }),
+    ],
+    css: {
+      preprocessorOptions: {
+        javascriptEnabled: true,
+        additionalData: `@import "${resolve(__dirname, 'src/styles/reset.less')}";`,
+      },
+      postcss: {
+        plugins: [postcssImport, autoprefixer]
+      }
+    },
+    resolve: {
+      alias: {
+        "@": resolve(__dirname, "src"),
+      }
+    },
+    build: {
+      // 清除console和debugger
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true,
+        },
+      },
+      //警报门槛，限制大文件大小
+      chunkSizeWarningLimit: 1500,
+      rollupOptions: {
+        output: {
+          //对静态文件进行打包处理（文件分类）
+          //此处打开后会导致背景图路径有问题，所以暂时隐藏，未找到合适的解决方案
+          chunkFileNames: 'assets/js/[name]-[hash].js',
+          entryFileNames: 'assets/js/[name]-[hash].js',
+          assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
+        }
+      },
+    },
+    server: {
+      open: true,
+      port: 2333,
+      proxy: {
+        '^/api': {
+          target: 'http://localhost:5021/api', // 后端服务实际地址
+          changeOrigin: true, //开启代理
+          rewrite: (path) => path.replace(/^\/api/, '')
+        }
+      }
+    },
+    base: loadEnv(mode, process.cwd()).VITE_PUBLIC_PATH
+  })
+}
+
 ```
-
-### 4. 进入容器内部 (高级运维)
-```bash
-# 进入后端容器查看文件或调试
-docker exec -it yuan-backend sh
-
-# 进入数据库命令行
-docker exec -it yuan-mongodb mongo
-```
-
----
-
-## 🔒 安全说明
-- **RSA 密钥**: 系统在首次启动时自动生成密钥。私钥存储在服务器本地 `config/private_key.pem`，**切勿泄露**。
-- **SSL 证书**: 默认生成自签名证书。如需使用已购买证书，请将正式证书替换至 `ssl/server.crt` 和 `ssl/server.key` 并重启服务。
-
-## 📝 更多文档
-- **前端详细说明**: [yuan/README.md](./yuan_blog/README.md)
-- **后端详细说明**: [yuan-server/README.md](./yuan_blog_server/README.md)
