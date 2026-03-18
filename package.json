@@ -1,0 +1,17 @@
+{
+  "name": "yuan-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Monorepo for yuan_blog and yuan_blog_server",
+  "scripts": {
+    "blog:dev": "pnpm --filter yuan_blog dev",
+    "blog:build": "pnpm --filter yuan_blog build",
+    "server:dev": "npm --prefix yuan_blog_server run dev",
+    "server:start": "npm --prefix yuan_blog_server start",
+    "install:all": "pnpm install && cd yuan_blog_server && npm install",
+    "pack": "node pack.js"
+  },
+  "devDependencies": {
+    "pnpm": "^8.0.0"
+  }
+}
