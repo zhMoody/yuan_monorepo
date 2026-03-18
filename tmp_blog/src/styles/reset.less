@@ -1,0 +1,189 @@
+// 全局css
+@font-face {
+  font-family: 'Basketball';
+  src: url('./fonts/Basketball.ttf');
+  font-display: swap;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+a {
+  text-decoration: none;
+}
+
+li {
+  list-style: none;
+}
+
+:root {
+  --c-blockquote: #eaeaea;
+  --c-text-primary: #191919;
+  --c-text-secondary: #737374;
+  --c-text-666: #777;
+  --c-text-777: #777;
+  --c-f9f9f930: #F9F9F9;
+  --c-border-primary: #ccc;
+  --c-bg-body: linear-gradient(125deg, #89edb4, #f3a8a0,) no-repeat top center fixed; //url("@/assets/ow.jpg")
+  --c-bg-primary: #fff;
+  --c-bg-secondary: #d4d8dd;
+  --background-color: #f9f9f9;
+  --80background-color: rgba(249, 249, 249, 0.8);
+  --c-bg-bodyFFF: #fff;
+  --c-base-blur: blur(50px);
+  --c-divider: rgba(237, 241, 242, 0.6);
+  --c-907e7e30: #907e7e30;
+  --c-7F780AFF: #7F780AFF;
+  --c-f1f3f4: #f1f3f4;
+  --c-header-boxShow: rgba(0, 0, 0, 0.05);
+  --c-doclistBg: #fdfdfd;
+  --c-doclistBg-item-hover: #efefef;
+  --c-content-bg: #f9f9f9;
+  --c-musiclist-bg: #F9F9F9;
+  --c-musiclist-item-bg: #e9e9e9;
+  --c-bg-settingTitle: #f0f4f4;
+  --c-info-text: #fefefe;
+  --c-info-bg: #d9e0e3;
+}
+
+:root.dark {
+  --c-info-text: #777777;
+  --c-info-bg: #000;
+  --c-bg-settingTitle: #000;
+  --c-divider: #252525;
+  --c-musiclist-bg: #191919;
+  --c-musiclist-item-bg: #252525;;
+  --c-content-bg: #191919;
+  --c-doclistBg: #1c1c1c;
+  --c-doclistBg-item-hover: #0d0d0d;
+  --c-blockquote: #1e1e1e;
+  --c-text-primary: #edeeef;
+  --c-text-secondary: #888;
+  --c-border-primary: #323232;
+  --c-bg-body: #191919;
+  --c-bg-primary: #1b1d23;
+  --c-bg-secondary: #000001;
+  --c-bg-button: #343844;
+  --c-text-666: #777777;
+  --c-f1f3f4: #191919;
+  --c-text-777: #888;
+  --c-f9f9f930: #212121;
+  --background-color: #f9f9f9;
+  --80background-color: rgba(249, 249, 249, 0.8);
+  --c-bg-bodyFFF: #212121;
+  --c-base-blur: blur(50px);
+  --c-907e7e30: #907e7e30;
+  --c-907e7e28: #907E7E28;
+  --c-7F780AFF: #7F780AFF;
+  --c-header-boxShow: rgba(255, 255, 255, 0.1);
+}
+
+body {
+  min-height: 100vh;
+  width: 100%;
+  background: var(--c-bg-body);
+  transition: all 1s ease;
+  color: var(--c-text-primary);
+  background: center center no-repeat fixed;
+  background-size: 100% 100%;
+  cursor: url('@/assets/mouse.cur'), default;
+
+  //padding: 0 220px;
+}
+
+body::after {
+  content: "";
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--c-bg-body);
+  z-index: -1;
+  background-size: 500%;
+  /* 执行动画：动画名 时长 线性的 无限次播放 */
+  animation: bgAnimation 15s linear infinite;
+}
+
+/* 定义动画 */
+@keyframes bgAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+body::before {
+  content: "";
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: url('../assets/HorseRacelamp.gif');
+  z-index: 9999;
+}
+
+body::-webkit-scrollbar {
+  width: 3px;
+  background: rgb(73, 73, 73);
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: rgba(240, 248, 255, 0.74);
+}
+
+// 全局路由原地淡入淡出动画
+.page-fade-enter-active {
+  transition: opacity 0.3s ease-out;
+}
+
+.page-fade-leave-active {
+  transition: opacity 0.15s ease-in;
+}
+
+.page-fade-enter-from,
+.page-fade-leave-to {
+  opacity: 0;
+}
+
+// 确保原地重叠，消除位移
+.route-wrapper {
+  position: relative;
+  width: 100%;
+  
+  .page-component {
+    width: 100%;
+    &.page-fade-enter-active,
+    &.page-fade-leave-active {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  }
+}
+
+.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: var(--c-text-666);
+  overflow: hidden;
+}
+
+@media screen and (max-width: 1350px) {
+  body {
+    padding: 0;
+  }
+}
