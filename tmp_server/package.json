@@ -1,0 +1,47 @@
+{
+  "name": "koa-server",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "dev:win": "powershell -ExecutionPolicy Bypass -File ./scripts/start-windows.ps1",
+    "dev:unix": "bash ./scripts/start-unix.sh",
+    "pm2:start": "pm2 start dist/app.js --name yuan-blog-server",
+    "pm2:stop": "pm2 stop yuan-blog-server",
+    "pm2:log": "pm2 logs yuan-blog-server",
+    "clean": "rimraf dist",
+    "build": "npm run clean && javascript-obfuscator ./ --output ./dist --exclude node_modules,dist,public,scripts,.git --compact true --self-defending true --string-array true && node scripts/build-assets.js"
+  },
+  "dependencies": {
+    "@koa/router": "^10.1.1",
+    "axios": "^1.3.2",
+    "basic-auth": "^2.0.1",
+    "bcrypt": "^4.0.1",
+    "bcryptjs": "^2.4.3",
+    "debug": "~2.6.8",
+    "jsonwebtoken": "^8.5.1",
+    "koa": "^2.3.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-bouncer": "^6.0.4",
+    "koa-convert": "^1.2.0",
+    "koa-cors": "^0.0.16",
+    "koa-json": "^2.0.2",
+    "koa-jwt": "^3.6.0",
+    "koa-logger": "^3.0.0",
+    "koa-multer": "^1.0.2",
+    "koa-onerror": "^3.1.0",
+    "koa-static": "^3.0.0",
+    "koa-views": "^6.0.2",
+    "koa2-cors": "^2.0.6",
+    "moment": "^2.24.0",
+    "mongoose": "^5.9.5"
+  },
+  "devDependencies": {
+    "babel-eslint": "7.1.1",
+    "eslint": "3.18.0",
+    "nodemon": "^2.0.20",
+    "rimraf": "^5.0.0",
+    "javascript-obfuscator": "^4.0.0"
+  }
+}

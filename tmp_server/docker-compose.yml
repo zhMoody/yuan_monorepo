@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  # MongoDB 数据库服务
+  mongodb:
+    image: mongo:latest
+    container_name: yuan-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      # 将数据存储在项目同级的 mongodb-data 目录
+      - ../mongodb-data:/data/db
+    restart: always
+
+  # Koa 后端服务
+  app:
+    build: .
+    container_name: yuan-server
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    environment:
+      # 连接到容器内的 mongodb 服务
+      - DB_HOST=mongodb
+      - DB_PORT=27017
+      - DB_NAME=yuanblog
+    restart: always
